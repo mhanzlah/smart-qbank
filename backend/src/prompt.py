@@ -1,41 +1,51 @@
 from schema import Input
 
-def generate_mcq_prompt(i:Input):
-    option_letters = [chr(65 + i) for i in range(5)]  # A, B, C, D, E...
 
-    prompt = f"""You are an expert exam question generator. Generate {i.num_questions} multiple choice questions (MCQs) in English for the subject "{i.subject}", suitable for a student at the "{i.level}" level, based on the following content:
+def generate_mcq_prompt(data: Input) -> str:
+    option_letters = ["A", "B", "C", "D"]
 
-"{i.content}"
+    return f"""
+You are an expert exam question generator.
+
+Generate exactly {data.num_questions} multiple-choice questions (MCQs) in English for the subject "{data.subject.value}", suitable for a "{data.level.value}" student, based only on the following content.
+
+Content:
+\"\"\"
+{data.content}
+\"\"\"
 
 Requirements:
-- Difficulty level: {i.difficulty}
-- Each question must have exactly {5} options ({", ".join(option_letters)})
-- Questions must test understanding, not just memorization
-- Questions must be appropriate for a "{i.level}" student
-- Do not repeat the same concept across multiple questions
-- The entire response must be written in English only
+- Difficulty: {data.difficulty.value}
+- Generate exactly {data.num_questions} questions.
+- Each question must have exactly 4 options (A, B, C, D).
+- Only one option is correct.
+- Questions should assess understanding and application, not simple memorization.
+- Do not repeat concepts across questions.
+- Do not invent information that is not present in the provided content.
+- Write everything in English.
+- Return ONLY valid JSON.
+- Do NOT include markdown, explanations, or any additional text.
 
-Return ONLY valid JSON, with no extra text, no markdown, and no explanations outside the JSON. Use exactly this structure:
+The JSON must exactly follow this structure:
 
 {{
-  "subject": "{i.subject}",
-  "level": "{i.level}",
-  "difficulty": "{i.difficulty}",
+  "subject": "{data.subject.value}",
+  "level": "{data.level.value}",
+  "difficulty": "{data.difficulty.value}",
   "questions": [
     {{
       "question_number": 1,
-      "question_text": "...",
+      "question_text": "Question text",
       "options": {{
-        "A": "...",
-        "B": "...",
-        "C": "...",
-        "D": "..."
+        "A": "Option A",
+        "B": "Option B",
+        "C": "Option C",
+        "D": "Option D"
       }},
       "correct_answer": "A"
     }}
   ]
 }}
 
-Now generate the JSON output with {i.num_questions} questions.
-"""
-    return prompt
+Now generate exactly {data.num_questions} questions.
+""".strip()

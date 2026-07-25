@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from enum import Enum
 
 class Subject(str, Enum):
@@ -18,4 +18,4 @@ class Input(BaseModel):
     content: str
     level: Level
     difficulty: Difficulty
-    num_questions: int
+    num_questions: int = Field(..., ge=1, le=100)
