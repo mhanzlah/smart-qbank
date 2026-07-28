@@ -3,7 +3,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 
 class Model:
     def __init__(self) -> None:
-        model_name = "Qwen/Qwen2.5-1.5B-Instruct"
+        model_name = "Qwen/Qwen2.5-3B-Instruct"
 
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
 
