@@ -23,7 +23,7 @@ app.add_middleware(
 
 @app.get("/")
 def read_root():
-    return {"message": "Smart Qbank API"}
+    return {"message": "Smart Qbank API from Usman"}
 
 
 @app.post("/process")
