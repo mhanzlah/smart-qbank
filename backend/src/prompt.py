@@ -1,22 +1,22 @@
 from schema import Input
 
 
-def generate_mcq_prompt(data: Input) -> str:
+def generate_mcq_prompt(i: Input) -> str:
     option_letters = ["A", "B", "C", "D"]
 
     return f"""
 You are an expert exam question generator.
 
-Generate exactly {data.num_questions} multiple-choice questions (MCQs) in English for the subject "{data.subject.value}", suitable for a "{data.level.value}" student, based only on the following content.
+Generate exactly {i.num_questions} multiple-choice questions (MCQs) in English for the subject "{i.subject.value}", suitable for a "{i.level.value}" student, based only on the following content.
 
 Content:
 \"\"\"
-{data.content}
+{i.content}
 \"\"\"
 
 Requirements:
-- Difficulty: {data.difficulty.value}
-- Generate exactly {data.num_questions} questions.
+- Difficulty: {i.difficulty.value}
+- Generate exactly {i.num_questions} questions.
 - Each question must have exactly 4 options (A, B, C, D).
 - Only one option is correct.
 - Questions should assess understanding and application, not simple memorization.
@@ -29,9 +29,9 @@ Requirements:
 The JSON must exactly follow this structure:
 
 {{
-  "subject": "{data.subject.value}",
-  "level": "{data.level.value}",
-  "difficulty": "{data.difficulty.value}",
+  "subject": "{i.subject.value}",
+  "level": "{i.level.value}",
+  "difficulty": "{i.difficulty.value}",
   "questions": [
     {{
       "question_number": 1,
@@ -47,5 +47,5 @@ The JSON must exactly follow this structure:
   ]
 }}
 
-Now generate exactly {data.num_questions} questions.
+Now generate exactly {i.num_questions} questions.
 """.strip()
