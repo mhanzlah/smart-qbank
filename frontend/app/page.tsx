@@ -9,24 +9,38 @@ export default function Home() {
 
   const [formData, setFormData] = useState({
     subject: "",
-    content: "",
-    difficulty: "easy",
-    level: "grade 11",
-    num_questions: 5,
+    topics: [],
+    level: "undergrad",
+    distribution: {easy:5, medium:3, hard:2},
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >,
-  ) => {
-    const { name, value } = e.target;
+const handleChange = (
+  e: React.ChangeEvent<
+    HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+  >
+) => {
+  const { name, value, type } = e.target;
 
+  if (name === "easy" || name === "medium" || name === "hard") {
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "num_questions" ? Number(value) : value,
+      distribution: {
+        ...prev.distribution,
+        [name]: Number(value),
+      },
     }));
-  };
+  } else if (name === "topics") {
+    setFormData((prev) => ({
+      ...prev,
+      topics: value.split(",").map((t) => t.trim()),
+    }));
+  } else {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }
+};
 
   const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
@@ -34,19 +48,22 @@ export default function Home() {
     try {
       setIsLoading(true);
 
-      const response = await fetch("http://localhost:8000/process", {
-        method: "post",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      // const response = await fetch("http://localhost:8000/process", {
+      //   method: "post",
+      //   headers: { "topics-Type": "application/json" },
+      //   body: JSON.stringify(formData),
+      // });
 
-      if (!response.ok) {
-        console.error("Request failed", response.status);
-      }
+      // if (!response.ok) {
+      //   console.error("Request failed", response.status);
+      // }
 
-      const data = await response.json();
+      // const data = await response.json();
 
-      setMCQS(data.response);
+      // setMCQS(data.response);
+
+      console.log(formData);
+      
     } catch (error) {
       setIsLoading(false);
       console.error(error);
@@ -78,38 +95,73 @@ export default function Home() {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="content" className="cursor-pointer text-sm">
-                Content
+              <label htmlFor="topics" className="cursor-pointer text-sm">
+                Topics
               </label>
-              <textarea
-                id="content"
-                name="content"
-                value={formData.content}
+              <input
+                id="topics"
+                name="topics"
+                value={formData.topics}
                 onChange={handleChange}
                 className="block w-full border rounded px-2 py-1"
               />
             </div>
 
             <div className="mb-4">
-              <label htmlFor="difficulty" className="cursor-pointer text-sm">
-                Difficulty
+              <label htmlFor="easy" className="cursor-pointer text-sm">
+                Easy
               </label>
-              <select
-                id="difficulty"
-                name="difficulty"
-                value={formData.difficulty}
+              <input
+                id="easy"
+                name="easy"
+                value={formData.distribution.easy}
+                type = "range"
+                min = {1}
+                max = {10}
                 onChange={handleChange}
                 className="block w-full border rounded px-1 py-1"
               >
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
-              </select>
+              </input>
+              <span>{formData.distribution.easy}</span>
+            </div>
+             <div className="mb-4">
+              <label htmlFor="medium" className="cursor-pointer text-sm">
+                Medium
+              </label>
+              <input
+                id="medium"
+                name="medium"
+                value={formData.distribution.medium}
+                type="range"
+                min = {1}
+                max = {7}
+                onChange={handleChange}
+                className="block w-full border rounded px-1 py-1"
+              >
+              </input>
+              <span>{formData.distribution.medium}</span>
+            </div>
+             <div className="mb-4">
+              <label htmlFor="hard" className="cursor-pointer text-sm">
+                Hard
+              </label>
+              <input
+                id="hard"
+                name="hard"
+                value={formData.distribution.hard}
+                onChange={handleChange}
+                type="range"
+                min = {1}
+                max = {5}
+                className="block w-full border rounded px-1 py-1"
+              >
+              </input>
+              <span>{formData.distribution.hard}</span>
             </div>
 
             <div className="mb-4">
               <label htmlFor="level" className="cursor-pointer text-sm">
-                Student Level/Class
+                Student Class
               </label>
               <select
                 id="level"
@@ -118,26 +170,8 @@ export default function Home() {
                 onChange={handleChange}
                 className="block w-full border rounded px-1 py-1"
               >
-                <option value="grade 11">Grade 11</option>
-                <option value="grade 12">Grade 12</option>
+                <option value="undergrad">Undergraguate</option>
               </select>
-            </div>
-
-            <div className="mb-6">
-              <label htmlFor="num_questions" className="cursor-pointer text-sm">
-                Number of Questions
-              </label>
-              <input
-                type="number"
-                id="num_questions"
-                name="num_questions"
-                min={1}
-                max={5}
-                step={1}
-                value={formData.num_questions}
-                onChange={handleChange}
-                className="block w-full border rounded px-2 py-1"
-              />
             </div>
 
             <button className="border rounded py-1 w-full cursor-pointer hover:font-semibold active:scale-99">
