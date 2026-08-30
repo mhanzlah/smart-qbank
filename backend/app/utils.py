@@ -122,3 +122,7 @@ def verify_password_reset_token(token: str) -> str | None:
         return str(decoded_token["sub"])
     except InvalidTokenError:
         return None
+
+
+def get_datetime_utc() -> datetime:
+    return datetime.now(UTC)

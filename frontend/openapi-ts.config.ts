@@ -1,7 +1,7 @@
-import { defineConfig } from "@hey-api/openapi-ts"
+import { defineConfig } from "@hey-api/openapi-ts";
 
 export default defineConfig({
-  input: "./openapi.json",
+  input: "http://localhost:8000/api/v1/openapi.json",
   output: "./src/client",
 
   plugins: [
@@ -18,4 +18,4 @@ export default defineConfig({
       },
     },
   ],
-})
+});

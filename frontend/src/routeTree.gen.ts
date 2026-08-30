@@ -16,8 +16,10 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
 import { Route as LayoutAdminRouteImport } from './routes/_layout/admin'
-import { Route as LayoutItemsRouteImport } from './routes/_layout/items'
+import { Route as LayoutQuestionsRouteImport } from './routes/_layout/questions'
 import { Route as LayoutSettingsRouteImport } from './routes/_layout/settings'
+import { Route as LayoutSubjectsRouteImport } from './routes/_layout/subjects'
+import { Route as LayoutTopicsRouteImport } from './routes/_layout/topics'
 
 const LayoutRoute = LayoutRouteImport.update({
   id: '/_layout',
@@ -53,14 +55,24 @@ const LayoutAdminRoute = LayoutAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => LayoutRoute,
 } as any)
-const LayoutItemsRoute = LayoutItemsRouteImport.update({
-  id: '/items',
-  path: '/items',
+const LayoutQuestionsRoute = LayoutQuestionsRouteImport.update({
+  id: '/questions',
+  path: '/questions',
   getParentRoute: () => LayoutRoute,
 } as any)
 const LayoutSettingsRoute = LayoutSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutSubjectsRoute = LayoutSubjectsRouteImport.update({
+  id: '/subjects',
+  path: '/subjects',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutTopicsRoute = LayoutTopicsRouteImport.update({
+  id: '/topics',
+  path: '/topics',
   getParentRoute: () => LayoutRoute,
 } as any)
 
@@ -71,8 +83,10 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
-  '/items': typeof LayoutItemsRoute
+  '/questions': typeof LayoutQuestionsRoute
   '/settings': typeof LayoutSettingsRoute
+  '/subjects': typeof LayoutSubjectsRoute
+  '/topics': typeof LayoutTopicsRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -80,8 +94,10 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
-  '/items': typeof LayoutItemsRoute
+  '/questions': typeof LayoutQuestionsRoute
   '/settings': typeof LayoutSettingsRoute
+  '/subjects': typeof LayoutSubjectsRoute
+  '/topics': typeof LayoutTopicsRoute
   '/': typeof LayoutIndexRoute
 }
 export interface FileRoutesById {
@@ -92,8 +108,10 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/_layout/admin': typeof LayoutAdminRoute
-  '/_layout/items': typeof LayoutItemsRoute
+  '/_layout/questions': typeof LayoutQuestionsRoute
   '/_layout/settings': typeof LayoutSettingsRoute
+  '/_layout/subjects': typeof LayoutSubjectsRoute
+  '/_layout/topics': typeof LayoutTopicsRoute
   '/_layout/': typeof LayoutIndexRoute
 }
 export interface FileRouteTypes {
@@ -105,8 +123,10 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/admin'
-    | '/items'
+    | '/questions'
     | '/settings'
+    | '/subjects'
+    | '/topics'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -114,8 +134,10 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/admin'
-    | '/items'
+    | '/questions'
     | '/settings'
+    | '/subjects'
+    | '/topics'
     | '/'
   id:
     | '__root__'
@@ -125,8 +147,10 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/_layout/admin'
-    | '/_layout/items'
+    | '/_layout/questions'
     | '/_layout/settings'
+    | '/_layout/subjects'
+    | '/_layout/topics'
     | '/_layout/'
   fileRoutesById: FileRoutesById
 }
@@ -189,11 +213,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutAdminRouteImport
       parentRoute: typeof LayoutRoute
     }
-    '/_layout/items': {
-      id: '/_layout/items'
-      path: '/items'
-      fullPath: '/items'
-      preLoaderRoute: typeof LayoutItemsRouteImport
+    '/_layout/questions': {
+      id: '/_layout/questions'
+      path: '/questions'
+      fullPath: '/questions'
+      preLoaderRoute: typeof LayoutQuestionsRouteImport
       parentRoute: typeof LayoutRoute
     }
     '/_layout/settings': {
@@ -203,20 +227,38 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutSettingsRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/_layout/subjects': {
+      id: '/_layout/subjects'
+      path: '/subjects'
+      fullPath: '/subjects'
+      preLoaderRoute: typeof LayoutSubjectsRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/topics': {
+      id: '/_layout/topics'
+      path: '/topics'
+      fullPath: '/topics'
+      preLoaderRoute: typeof LayoutTopicsRouteImport
+      parentRoute: typeof LayoutRoute
+    }
   }
 }
 
 interface LayoutRouteChildren {
   LayoutAdminRoute: typeof LayoutAdminRoute
-  LayoutItemsRoute: typeof LayoutItemsRoute
+  LayoutQuestionsRoute: typeof LayoutQuestionsRoute
   LayoutSettingsRoute: typeof LayoutSettingsRoute
+  LayoutSubjectsRoute: typeof LayoutSubjectsRoute
+  LayoutTopicsRoute: typeof LayoutTopicsRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutAdminRoute: LayoutAdminRoute,
-  LayoutItemsRoute: LayoutItemsRoute,
+  LayoutQuestionsRoute: LayoutQuestionsRoute,
   LayoutSettingsRoute: LayoutSettingsRoute,
+  LayoutSubjectsRoute: LayoutSubjectsRoute,
+  LayoutTopicsRoute: LayoutTopicsRoute,
   LayoutIndexRoute: LayoutIndexRoute,
 }
 

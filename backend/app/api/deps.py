@@ -11,7 +11,9 @@ from sqlmodel import Session
 from app.core import security
 from app.core.config import settings
 from app.core.db import engine
-from app.models import TokenPayload, User
+from app.models.user import User
+from app.schemas.user import UserRole
+from app.schemas.auth import TokenPayload
 
 reusable_oauth2 = OAuth2PasswordBearer(
     tokenUrl=f"{settings.API_V1_STR}/login/access-token"
@@ -33,7 +35,7 @@ def get_current_user(session: SessionDep, token: TokenDep) -> User:
             token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
         )
         token_data = TokenPayload(**payload)
-    except InvalidTokenError, ValidationError:
+    except (InvalidTokenError, ValidationError):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Could not validate credentials",
@@ -55,3 +57,23 @@ def get_current_active_superuser(current_user: CurrentUser) -> User:
             status_code=403, detail="The user doesn't have enough privileges"
         )
     return current_user
+
+
+CurrentSuperUser = Annotated[User, Depends(get_current_active_superuser)]
+
+
+def get_current_editor(current_user: CurrentUser) -> User:
+    if current_user.is_superuser:
+        return current_user
+
+    if current_user.role != UserRole.EDITOR:
+        raise HTTPException(
+            status_code=403, detail="The user doesn't have enough privileges"
+        )
+    return current_user
+
+
+CurrentEditor = Annotated[
+    User,
+    Depends(get_current_editor),
+]

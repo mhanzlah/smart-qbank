@@ -1,13 +1,20 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Plus } from "lucide-react"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Plus } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-import { type UserCreate, UsersService } from "@/client"
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
+import { type UserCreate, UsersService } from "@/client";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Dialog,
   DialogClose,
@@ -17,7 +24,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -25,11 +32,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { LoadingButton } from "@/components/ui/loading-button"
-import useCustomToast from "@/hooks/useCustomToast"
-import { handleError } from "@/utils"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { LoadingButton } from "@/components/ui/loading-button";
+import useCustomToast from "@/hooks/useCustomToast";
+import { handleError } from "@/utils";
 
 const formSchema = z
   .object({
@@ -42,20 +49,21 @@ const formSchema = z
     confirm_password: z
       .string()
       .min(1, { message: "Please confirm your password" }),
+    role: z.enum(["user", "editor"]),
     is_superuser: z.boolean(),
     is_active: z.boolean(),
   })
   .refine((data) => data.password === data.confirm_password, {
     message: "The passwords don't match",
     path: ["confirm_password"],
-  })
+  });
 
-type FormData = z.infer<typeof formSchema>
+type FormData = z.infer<typeof formSchema>;
 
 const AddUser = () => {
-  const [isOpen, setIsOpen] = useState(false)
-  const queryClient = useQueryClient()
-  const { showSuccessToast, showErrorToast } = useCustomToast()
+  const [isOpen, setIsOpen] = useState(false);
+  const queryClient = useQueryClient();
+  const { showSuccessToast, showErrorToast } = useCustomToast();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -66,27 +74,28 @@ const AddUser = () => {
       full_name: "",
       password: "",
       confirm_password: "",
+      role: "user",
       is_superuser: false,
-      is_active: false,
+      is_active: true,
     },
-  })
+  });
 
   const mutation = useMutation({
     mutationFn: (data: UserCreate) => UsersService.createUser({ body: data }),
     onSuccess: () => {
-      showSuccessToast("User created successfully")
-      form.reset()
-      setIsOpen(false)
+      showSuccessToast("User created successfully");
+      form.reset();
+      setIsOpen(false);
     },
     onError: handleError.bind(showErrorToast),
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] })
+      queryClient.invalidateQueries({ queryKey: ["users"] });
     },
-  })
+  });
 
   const onSubmit = (data: FormData) => {
-    mutation.mutate(data)
-  }
+    mutation.mutate(data);
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -186,6 +195,29 @@ const AddUser = () => {
 
               <FormField
                 control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Role</FormLabel>
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select role" />
+                        </SelectTrigger>
+                      </FormControl>
+
+                      <SelectContent>
+                        <SelectItem value="user">User</SelectItem>
+                        <SelectItem value="editor">Editor</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
                 name="is_superuser"
                 render={({ field }) => (
                   <FormItem className="flex items-center gap-3 space-y-0">
@@ -231,7 +263,7 @@ const AddUser = () => {
         </Form>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
 
-export default AddUser
+export default AddUser;
