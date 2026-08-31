@@ -231,7 +231,7 @@ function Questions() {
           </Button>
 
           {/* Add Question */}
-          {isSuperuser && topicId && <AddQuestion topicId={topicId} />}
+          {isSuperuser && <AddQuestion topicId={topicId} disabled={!topicId} />}
         </div>
       </div>
 

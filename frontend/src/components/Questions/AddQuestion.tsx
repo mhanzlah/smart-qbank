@@ -58,9 +58,10 @@ type FormData = z.infer<typeof formSchema>;
 
 interface AddQuestionProps {
   topicId: string;
+  disabled?: boolean;
 }
 
-const AddQuestion = ({ topicId }: AddQuestionProps) => {
+const AddQuestion = ({ topicId, disabled = false }: AddQuestionProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const queryClient = useQueryClient();
@@ -137,7 +138,7 @@ const AddQuestion = ({ topicId }: AddQuestionProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button className="my-4">
+        <Button className="my-4" disabled={disabled}>
           <Plus className="mr-2 h-4 w-4" />
           Add Question
         </Button>
