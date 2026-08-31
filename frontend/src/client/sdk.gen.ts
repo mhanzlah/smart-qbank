@@ -2,7 +2,7 @@
 
 import { type Client, type Options as Options2, type TDataShape, urlSearchParamsBodySerializer } from './client';
 import { client } from './client.gen';
-import type { loginLoginAccessTokenData, loginLoginAccessTokenErrors, loginLoginAccessTokenResponses, loginRecoverPasswordData, loginRecoverPasswordErrors, loginRecoverPasswordHtmlContentData, loginRecoverPasswordHtmlContentErrors, loginRecoverPasswordHtmlContentResponses, loginRecoverPasswordResponses, loginResetPasswordData, loginResetPasswordErrors, loginResetPasswordResponses, loginTestTokenData, loginTestTokenResponses, privateCreateUserData, privateCreateUserErrors, privateCreateUserResponses, usersCreateUserData, usersCreateUserErrors, usersCreateUserResponses, usersDeleteUserData, usersDeleteUserErrors, usersDeleteUserMeData, usersDeleteUserMeResponses, usersDeleteUserResponses, usersReadUserByIdData, usersReadUserByIdErrors, usersReadUserByIdResponses, usersReadUserMeData, usersReadUserMeResponses, usersReadUsersData, usersReadUsersErrors, usersReadUsersResponses, usersRegisterUserData, usersRegisterUserErrors, usersRegisterUserResponses, usersUpdatePasswordMeData, usersUpdatePasswordMeErrors, usersUpdatePasswordMeResponses, usersUpdateUserData, usersUpdateUserErrors, usersUpdateUserMeData, usersUpdateUserMeErrors, usersUpdateUserMeResponses, usersUpdateUserResponses, utilsHealthCheckData, utilsHealthCheckResponses, utilsTestEmailData, utilsTestEmailErrors, utilsTestEmailResponses } from './types.gen';
+import type { loginLoginAccessTokenData, loginLoginAccessTokenErrors, loginLoginAccessTokenResponses, loginRecoverPasswordData, loginRecoverPasswordErrors, loginRecoverPasswordHtmlContentData, loginRecoverPasswordHtmlContentErrors, loginRecoverPasswordHtmlContentResponses, loginRecoverPasswordResponses, loginResetPasswordData, loginResetPasswordErrors, loginResetPasswordResponses, loginTestTokenData, loginTestTokenResponses, privateCreateUserData, privateCreateUserErrors, privateCreateUserResponses, questionsCreateQuestionData, questionsCreateQuestionErrors, questionsCreateQuestionResponses, questionsDeleteQuestionData, questionsDeleteQuestionErrors, questionsDeleteQuestionResponses, questionsReadQuestionData, questionsReadQuestionErrors, questionsReadQuestionResponses, questionsReadQuestionsData, questionsReadQuestionsErrors, questionsReadQuestionsForReviewData, questionsReadQuestionsForReviewResponses, questionsReadQuestionsResponses, questionsReviewQuestionData, questionsReviewQuestionErrors, questionsReviewQuestionResponses, questionsUpdateQuestionData, questionsUpdateQuestionErrors, questionsUpdateQuestionResponses, subjectsCreateSubjectData, subjectsCreateSubjectErrors, subjectsCreateSubjectResponses, subjectsDeleteSubjectData, subjectsDeleteSubjectErrors, subjectsDeleteSubjectResponses, subjectsReadSubjectData, subjectsReadSubjectErrors, subjectsReadSubjectResponses, subjectsReadSubjectsData, subjectsReadSubjectsResponses, subjectsUpdateSubjectData, subjectsUpdateSubjectErrors, subjectsUpdateSubjectResponses, topicsCreateTopicData, topicsCreateTopicErrors, topicsCreateTopicResponses, topicsCreateTopicsData, topicsCreateTopicsErrors, topicsCreateTopicsResponses, topicsDeleteTopicData, topicsDeleteTopicErrors, topicsDeleteTopicResponses, topicsGenerateTopicsData, topicsGenerateTopicsErrors, topicsGenerateTopicsResponses, topicsReadTopicData, topicsReadTopicErrors, topicsReadTopicResponses, topicsReadTopicsData, topicsReadTopicsErrors, topicsReadTopicsResponses, topicsUpdateTopicData, topicsUpdateTopicErrors, topicsUpdateTopicResponses, usersCreateUserData, usersCreateUserErrors, usersCreateUserResponses, usersDeleteUserData, usersDeleteUserErrors, usersDeleteUserMeData, usersDeleteUserMeResponses, usersDeleteUserResponses, usersReadUserByIdData, usersReadUserByIdErrors, usersReadUserByIdResponses, usersReadUserMeData, usersReadUserMeResponses, usersReadUsersData, usersReadUsersErrors, usersReadUsersResponses, usersRegisterUserData, usersRegisterUserErrors, usersRegisterUserResponses, usersUpdatePasswordMeData, usersUpdatePasswordMeErrors, usersUpdatePasswordMeResponses, usersUpdateUserData, usersUpdateUserErrors, usersUpdateUserMeData, usersUpdateUserMeErrors, usersUpdateUserMeResponses, usersUpdateUserResponses, utilsHealthCheckData, utilsHealthCheckResponses, utilsTestEmailData, utilsTestEmailErrors, utilsTestEmailResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -92,6 +92,276 @@ export class LoginService {
             security: [{ scheme: 'bearer', type: 'http' }],
             url: '/api/v1/password-recovery-html-content/{email}',
             ...options
+        });
+    }
+}
+
+export class QuestionsService {
+    /**
+     * Read Questions
+     */
+    public static readQuestions<ThrowOnError extends boolean = true>(options?: Options<questionsReadQuestionsData, ThrowOnError>) {
+        return (options?.client ?? client).get<questionsReadQuestionsResponses, questionsReadQuestionsErrors, ThrowOnError>({
+            responseType: 'json',
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/questions/',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options?.headers
+            }
+        });
+    }
+    
+    /**
+     * Create Question
+     */
+    public static createQuestion<ThrowOnError extends boolean = true>(options: Options<questionsCreateQuestionData, ThrowOnError>) {
+        return (options.client ?? client).post<questionsCreateQuestionResponses, questionsCreateQuestionErrors, ThrowOnError>({
+            responseType: 'json',
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/questions/',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * Read Questions For Review
+     */
+    public static readQuestionsForReview<ThrowOnError extends boolean = true>(options?: Options<questionsReadQuestionsForReviewData, ThrowOnError>) {
+        return (options?.client ?? client).get<questionsReadQuestionsForReviewResponses, unknown, ThrowOnError>({
+            responseType: 'json',
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/questions/review',
+            ...options
+        });
+    }
+    
+    /**
+     * Delete Question
+     */
+    public static deleteQuestion<ThrowOnError extends boolean = true>(options: Options<questionsDeleteQuestionData, ThrowOnError>) {
+        return (options.client ?? client).delete<questionsDeleteQuestionResponses, questionsDeleteQuestionErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/questions/{question_id}',
+            ...options
+        });
+    }
+    
+    /**
+     * Read Question
+     */
+    public static readQuestion<ThrowOnError extends boolean = true>(options: Options<questionsReadQuestionData, ThrowOnError>) {
+        return (options.client ?? client).get<questionsReadQuestionResponses, questionsReadQuestionErrors, ThrowOnError>({
+            responseType: 'json',
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/questions/{question_id}',
+            ...options
+        });
+    }
+    
+    /**
+     * Update Question
+     */
+    public static updateQuestion<ThrowOnError extends boolean = true>(options: Options<questionsUpdateQuestionData, ThrowOnError>) {
+        return (options.client ?? client).patch<questionsUpdateQuestionResponses, questionsUpdateQuestionErrors, ThrowOnError>({
+            responseType: 'json',
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/questions/{question_id}',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * Review Question
+     */
+    public static reviewQuestion<ThrowOnError extends boolean = true>(options: Options<questionsReviewQuestionData, ThrowOnError>) {
+        return (options.client ?? client).patch<questionsReviewQuestionResponses, questionsReviewQuestionErrors, ThrowOnError>({
+            responseType: 'json',
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/questions/{question_id}/review',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+}
+
+export class SubjectsService {
+    /**
+     * Read Subjects
+     */
+    public static readSubjects<ThrowOnError extends boolean = true>(options?: Options<subjectsReadSubjectsData, ThrowOnError>) {
+        return (options?.client ?? client).get<subjectsReadSubjectsResponses, unknown, ThrowOnError>({
+            responseType: 'json',
+            url: '/api/v1/subjects/',
+            ...options
+        });
+    }
+    
+    /**
+     * Create Subject
+     */
+    public static createSubject<ThrowOnError extends boolean = true>(options: Options<subjectsCreateSubjectData, ThrowOnError>) {
+        return (options.client ?? client).post<subjectsCreateSubjectResponses, subjectsCreateSubjectErrors, ThrowOnError>({
+            responseType: 'json',
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/subjects/',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * Delete Subject
+     */
+    public static deleteSubject<ThrowOnError extends boolean = true>(options: Options<subjectsDeleteSubjectData, ThrowOnError>) {
+        return (options.client ?? client).delete<subjectsDeleteSubjectResponses, subjectsDeleteSubjectErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/subjects/{subject_id}',
+            ...options
+        });
+    }
+    
+    /**
+     * Read Subject
+     */
+    public static readSubject<ThrowOnError extends boolean = true>(options: Options<subjectsReadSubjectData, ThrowOnError>) {
+        return (options.client ?? client).get<subjectsReadSubjectResponses, subjectsReadSubjectErrors, ThrowOnError>({
+            responseType: 'json',
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/subjects/{subject_id}',
+            ...options
+        });
+    }
+    
+    /**
+     * Update Subject
+     */
+    public static updateSubject<ThrowOnError extends boolean = true>(options: Options<subjectsUpdateSubjectData, ThrowOnError>) {
+        return (options.client ?? client).patch<subjectsUpdateSubjectResponses, subjectsUpdateSubjectErrors, ThrowOnError>({
+            responseType: 'json',
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/subjects/{subject_id}',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+}
+
+export class TopicsService {
+    /**
+     * Read Topics
+     */
+    public static readTopics<ThrowOnError extends boolean = true>(options?: Options<topicsReadTopicsData, ThrowOnError>) {
+        return (options?.client ?? client).get<topicsReadTopicsResponses, topicsReadTopicsErrors, ThrowOnError>({
+            responseType: 'json',
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/topics/',
+            ...options
+        });
+    }
+    
+    /**
+     * Create Topic
+     */
+    public static createTopic<ThrowOnError extends boolean = true>(options: Options<topicsCreateTopicData, ThrowOnError>) {
+        return (options.client ?? client).post<topicsCreateTopicResponses, topicsCreateTopicErrors, ThrowOnError>({
+            responseType: 'json',
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/topics/',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * Delete Topic
+     */
+    public static deleteTopic<ThrowOnError extends boolean = true>(options: Options<topicsDeleteTopicData, ThrowOnError>) {
+        return (options.client ?? client).delete<topicsDeleteTopicResponses, topicsDeleteTopicErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/topics/{topic_id}',
+            ...options
+        });
+    }
+    
+    /**
+     * Read Topic
+     */
+    public static readTopic<ThrowOnError extends boolean = true>(options: Options<topicsReadTopicData, ThrowOnError>) {
+        return (options.client ?? client).get<topicsReadTopicResponses, topicsReadTopicErrors, ThrowOnError>({
+            responseType: 'json',
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/topics/{topic_id}',
+            ...options
+        });
+    }
+    
+    /**
+     * Update Topic
+     */
+    public static updateTopic<ThrowOnError extends boolean = true>(options: Options<topicsUpdateTopicData, ThrowOnError>) {
+        return (options.client ?? client).patch<topicsUpdateTopicResponses, topicsUpdateTopicErrors, ThrowOnError>({
+            responseType: 'json',
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/topics/{topic_id}',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * Create Topics
+     */
+    public static createTopics<ThrowOnError extends boolean = true>(options: Options<topicsCreateTopicsData, ThrowOnError>) {
+        return (options.client ?? client).post<topicsCreateTopicsResponses, topicsCreateTopicsErrors, ThrowOnError>({
+            responseType: 'json',
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/topics/bulk',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * Generate Topics
+     */
+    public static generateTopics<ThrowOnError extends boolean = true>(options: Options<topicsGenerateTopicsData, ThrowOnError>) {
+        return (options.client ?? client).post<topicsGenerateTopicsResponses, topicsGenerateTopicsErrors, ThrowOnError>({
+            responseType: 'json',
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/topics/generate',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
         });
     }
 }

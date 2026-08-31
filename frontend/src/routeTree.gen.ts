@@ -16,10 +16,11 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
 import { Route as LayoutAdminRouteImport } from './routes/_layout/admin'
-import { Route as LayoutQuestionsRouteImport } from './routes/_layout/questions'
 import { Route as LayoutSettingsRouteImport } from './routes/_layout/settings'
 import { Route as LayoutSubjectsRouteImport } from './routes/_layout/subjects'
 import { Route as LayoutTopicsRouteImport } from './routes/_layout/topics'
+import { Route as LayoutQuestionsIndexRouteImport } from './routes/_layout/questions/index'
+import { Route as LayoutQuestionsReviewRouteImport } from './routes/_layout/questions/review'
 
 const LayoutRoute = LayoutRouteImport.update({
   id: '/_layout',
@@ -55,11 +56,6 @@ const LayoutAdminRoute = LayoutAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => LayoutRoute,
 } as any)
-const LayoutQuestionsRoute = LayoutQuestionsRouteImport.update({
-  id: '/questions',
-  path: '/questions',
-  getParentRoute: () => LayoutRoute,
-} as any)
 const LayoutSettingsRoute = LayoutSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -75,6 +71,16 @@ const LayoutTopicsRoute = LayoutTopicsRouteImport.update({
   path: '/topics',
   getParentRoute: () => LayoutRoute,
 } as any)
+const LayoutQuestionsIndexRoute = LayoutQuestionsIndexRouteImport.update({
+  id: '/questions/',
+  path: '/questions/',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutQuestionsReviewRoute = LayoutQuestionsReviewRouteImport.update({
+  id: '/questions/review',
+  path: '/questions/review',
+  getParentRoute: () => LayoutRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof LayoutIndexRoute
@@ -83,10 +89,11 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
-  '/questions': typeof LayoutQuestionsRoute
   '/settings': typeof LayoutSettingsRoute
   '/subjects': typeof LayoutSubjectsRoute
   '/topics': typeof LayoutTopicsRoute
+  '/questions/review': typeof LayoutQuestionsReviewRoute
+  '/questions/': typeof LayoutQuestionsIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -94,11 +101,12 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
-  '/questions': typeof LayoutQuestionsRoute
   '/settings': typeof LayoutSettingsRoute
   '/subjects': typeof LayoutSubjectsRoute
   '/topics': typeof LayoutTopicsRoute
   '/': typeof LayoutIndexRoute
+  '/questions/review': typeof LayoutQuestionsReviewRoute
+  '/questions': typeof LayoutQuestionsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -108,11 +116,12 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/_layout/admin': typeof LayoutAdminRoute
-  '/_layout/questions': typeof LayoutQuestionsRoute
   '/_layout/settings': typeof LayoutSettingsRoute
   '/_layout/subjects': typeof LayoutSubjectsRoute
   '/_layout/topics': typeof LayoutTopicsRoute
   '/_layout/': typeof LayoutIndexRoute
+  '/_layout/questions/review': typeof LayoutQuestionsReviewRoute
+  '/_layout/questions/': typeof LayoutQuestionsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -123,10 +132,11 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/admin'
-    | '/questions'
     | '/settings'
     | '/subjects'
     | '/topics'
+    | '/questions/review'
+    | '/questions/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -134,11 +144,12 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/admin'
-    | '/questions'
     | '/settings'
     | '/subjects'
     | '/topics'
     | '/'
+    | '/questions/review'
+    | '/questions'
   id:
     | '__root__'
     | '/_layout'
@@ -147,11 +158,12 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/_layout/admin'
-    | '/_layout/questions'
     | '/_layout/settings'
     | '/_layout/subjects'
     | '/_layout/topics'
     | '/_layout/'
+    | '/_layout/questions/review'
+    | '/_layout/questions/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -213,13 +225,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutAdminRouteImport
       parentRoute: typeof LayoutRoute
     }
-    '/_layout/questions': {
-      id: '/_layout/questions'
-      path: '/questions'
-      fullPath: '/questions'
-      preLoaderRoute: typeof LayoutQuestionsRouteImport
-      parentRoute: typeof LayoutRoute
-    }
     '/_layout/settings': {
       id: '/_layout/settings'
       path: '/settings'
@@ -241,25 +246,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutTopicsRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/_layout/questions/': {
+      id: '/_layout/questions/'
+      path: '/questions'
+      fullPath: '/questions/'
+      preLoaderRoute: typeof LayoutQuestionsIndexRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/questions/review': {
+      id: '/_layout/questions/review'
+      path: '/questions/review'
+      fullPath: '/questions/review'
+      preLoaderRoute: typeof LayoutQuestionsReviewRouteImport
+      parentRoute: typeof LayoutRoute
+    }
   }
 }
 
 interface LayoutRouteChildren {
   LayoutAdminRoute: typeof LayoutAdminRoute
-  LayoutQuestionsRoute: typeof LayoutQuestionsRoute
   LayoutSettingsRoute: typeof LayoutSettingsRoute
   LayoutSubjectsRoute: typeof LayoutSubjectsRoute
   LayoutTopicsRoute: typeof LayoutTopicsRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
+  LayoutQuestionsReviewRoute: typeof LayoutQuestionsReviewRoute
+  LayoutQuestionsIndexRoute: typeof LayoutQuestionsIndexRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutAdminRoute: LayoutAdminRoute,
-  LayoutQuestionsRoute: LayoutQuestionsRoute,
   LayoutSettingsRoute: LayoutSettingsRoute,
   LayoutSubjectsRoute: LayoutSubjectsRoute,
   LayoutTopicsRoute: LayoutTopicsRoute,
   LayoutIndexRoute: LayoutIndexRoute,
+  LayoutQuestionsReviewRoute: LayoutQuestionsReviewRoute,
+  LayoutQuestionsIndexRoute: LayoutQuestionsIndexRoute,
 }
 
 const LayoutRouteWithChildren =

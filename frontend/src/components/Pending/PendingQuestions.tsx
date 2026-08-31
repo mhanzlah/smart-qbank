@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -6,32 +6,41 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 
-const PendingItems = () => (
+const PendingQuestions = () => (
   <Table>
     <TableHeader>
       <TableRow>
-        <TableHead>ID</TableHead>
-        <TableHead>Title</TableHead>
-        <TableHead>Description</TableHead>
+        <TableHead>Question</TableHead>
+        <TableHead>Topic</TableHead>
+        <TableHead>Difficulty</TableHead>
+        <TableHead>Status</TableHead>
         <TableHead>
           <span className="sr-only">Actions</span>
         </TableHead>
       </TableRow>
     </TableHeader>
+
     <TableBody>
       {Array.from({ length: 5 }).map((_, index) => (
         <TableRow key={index}>
           <TableCell>
-            <Skeleton className="h-4 w-64 font-mono" />
+            <Skeleton className="h-4 w-64" />
           </TableCell>
+
           <TableCell>
             <Skeleton className="h-4 w-32" />
           </TableCell>
+
           <TableCell>
-            <Skeleton className="h-4 w-48" />
+            <Skeleton className="h-5 w-20 rounded-full" />
           </TableCell>
+
+          <TableCell>
+            <Skeleton className="h-5 w-20 rounded-full" />
+          </TableCell>
+
           <TableCell>
             <div className="flex justify-end">
               <Skeleton className="size-8 rounded-md" />
@@ -41,6 +50,6 @@ const PendingItems = () => (
       ))}
     </TableBody>
   </Table>
-)
+);
 
-export default PendingItems
+export default PendingQuestions;

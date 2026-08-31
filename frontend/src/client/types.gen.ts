@@ -35,6 +35,32 @@ export type Body_login_login_access_token = {
 };
 
 /**
+ * GeneratedTopic
+ */
+export type GeneratedTopic = {
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Description
+     */
+    description?: string | null;
+    /**
+     * Cognitive Levels
+     */
+    cognitive_levels: Array<string>;
+    /**
+     * Mcq Focus
+     */
+    mcq_focus: string;
+    /**
+     * Key Areas
+     */
+    key_areas: Array<string>;
+};
+
+/**
  * HTTPValidationError
  */
 export type HTTPValidationError = {
@@ -91,6 +117,191 @@ export type PrivateUserCreate = {
 };
 
 /**
+ * QuestionCreate
+ */
+export type QuestionCreate = {
+    /**
+     * Question
+     */
+    question: string;
+    /**
+     * Options
+     */
+    options: Array<string>;
+    /**
+     * Correct Option
+     */
+    correct_option: string;
+    difficulty: QuestionDifficulty;
+    /**
+     * Cognitive Level
+     */
+    cognitive_level: string;
+    /**
+     * Explanation
+     */
+    explanation: string;
+    /**
+     * Topic Id
+     */
+    topic_id: string;
+};
+
+/**
+ * QuestionDifficulty
+ */
+export type QuestionDifficulty = 'easy' | 'medium' | 'hard';
+
+/**
+ * QuestionPublic
+ */
+export type QuestionPublic = {
+    /**
+     * Question
+     */
+    question: string;
+    /**
+     * Options
+     */
+    options: Array<string>;
+    /**
+     * Correct Option
+     */
+    correct_option: string;
+    difficulty: QuestionDifficulty;
+    /**
+     * Cognitive Level
+     */
+    cognitive_level: string;
+    /**
+     * Explanation
+     */
+    explanation: string;
+    /**
+     * Topic Id
+     */
+    topic_id: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Is Validated
+     */
+    is_validated: boolean;
+    review_status: QuestionReviewStatus;
+    /**
+     * Created At
+     */
+    created_at?: string | null;
+};
+
+/**
+ * QuestionReview
+ */
+export type QuestionReview = {
+    review_status: QuestionReviewStatus;
+};
+
+/**
+ * QuestionReviewStatus
+ */
+export type QuestionReviewStatus = 'pending' | 'approved' | 'rejected';
+
+/**
+ * QuestionUpdate
+ */
+export type QuestionUpdate = {
+    /**
+     * Question
+     */
+    question?: string | null;
+    /**
+     * Options
+     */
+    options?: Array<string> | null;
+    /**
+     * Correct Option
+     */
+    correct_option?: string | null;
+    difficulty?: QuestionDifficulty | null;
+    /**
+     * Cognitive Level
+     */
+    cognitive_level?: string | null;
+    /**
+     * Explanation
+     */
+    explanation?: string | null;
+    /**
+     * Topic Id
+     */
+    topic_id?: string | null;
+};
+
+/**
+ * SubjectCreate
+ */
+export type SubjectCreate = {
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Code
+     */
+    code?: string | null;
+    /**
+     * Clo
+     */
+    clo?: string | null;
+};
+
+/**
+ * SubjectPublic
+ */
+export type SubjectPublic = {
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Code
+     */
+    code?: string | null;
+    /**
+     * Clo
+     */
+    clo?: string | null;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Created At
+     */
+    created_at: string;
+};
+
+/**
+ * SubjectUpdate
+ */
+export type SubjectUpdate = {
+    /**
+     * Name
+     */
+    name?: string | null;
+    /**
+     * Code
+     */
+    code?: string | null;
+    /**
+     * Clo
+     */
+    clo?: string | null;
+};
+
+/**
  * Token
  */
 export type Token = {
@@ -102,6 +313,152 @@ export type Token = {
      * Token Type
      */
     token_type?: string;
+};
+
+/**
+ * TopicBulkCreateRequest
+ */
+export type TopicBulkCreateRequest = {
+    /**
+     * Subject Id
+     */
+    subject_id: string;
+    /**
+     * Topics
+     */
+    topics: Array<GeneratedTopic>;
+};
+
+/**
+ * TopicBulkCreateResponse
+ */
+export type TopicBulkCreateResponse = {
+    /**
+     * Topics
+     */
+    topics: Array<TopicPublic>;
+};
+
+/**
+ * TopicCreate
+ */
+export type TopicCreate = {
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Description
+     */
+    description?: string | null;
+    /**
+     * Cognitive Levels
+     */
+    cognitive_levels: Array<string>;
+    /**
+     * Mcq Focus
+     */
+    mcq_focus: string;
+    /**
+     * Key Areas
+     */
+    key_areas: Array<string>;
+    /**
+     * Subject Id
+     */
+    subject_id: string;
+};
+
+/**
+ * TopicGenerationRequest
+ */
+export type TopicGenerationRequest = {
+    /**
+     * Subject Id
+     */
+    subject_id: string;
+    /**
+     * Number Of Topics
+     */
+    number_of_topics?: number;
+};
+
+/**
+ * TopicGenerationResponse
+ */
+export type TopicGenerationResponse = {
+    /**
+     * Topics
+     */
+    topics: Array<GeneratedTopic>;
+};
+
+/**
+ * TopicPublic
+ */
+export type TopicPublic = {
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Description
+     */
+    description?: string | null;
+    /**
+     * Cognitive Levels
+     */
+    cognitive_levels: Array<string>;
+    /**
+     * Mcq Focus
+     */
+    mcq_focus: string;
+    /**
+     * Key Areas
+     */
+    key_areas: Array<string>;
+    /**
+     * Subject Id
+     */
+    subject_id: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Created At
+     */
+    created_at?: string | null;
+};
+
+/**
+ * TopicUpdate
+ */
+export type TopicUpdate = {
+    /**
+     * Name
+     */
+    name?: string | null;
+    /**
+     * Description
+     */
+    description?: string | null;
+    /**
+     * Cognitive Levels
+     */
+    cognitive_levels?: Array<string> | null;
+    /**
+     * Mcq Focus
+     */
+    mcq_focus?: string | null;
+    /**
+     * Key Areas
+     */
+    key_areas?: Array<string> | null;
+    /**
+     * Subject Id
+     */
+    subject_id?: string | null;
 };
 
 /**
@@ -407,6 +764,529 @@ export type loginRecoverPasswordHtmlContentResponses = {
 };
 
 export type loginRecoverPasswordHtmlContentResponse = loginRecoverPasswordHtmlContentResponses[keyof loginRecoverPasswordHtmlContentResponses];
+
+export type questionsReadQuestionsData = {
+    /**
+     * Topic Ids
+     */
+    body?: Array<string> | null;
+    path?: never;
+    query?: never;
+    url: '/api/v1/questions/';
+};
+
+export type questionsReadQuestionsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HTTPValidationError;
+};
+
+export type questionsReadQuestionsError = questionsReadQuestionsErrors[keyof questionsReadQuestionsErrors];
+
+export type questionsReadQuestionsResponses = {
+    /**
+     * Response Questions-Read Questions
+     *
+     * Successful Response
+     */
+    200: Array<QuestionPublic>;
+};
+
+export type questionsReadQuestionsResponse = questionsReadQuestionsResponses[keyof questionsReadQuestionsResponses];
+
+export type questionsCreateQuestionData = {
+    body: QuestionCreate;
+    path?: never;
+    query?: never;
+    url: '/api/v1/questions/';
+};
+
+export type questionsCreateQuestionErrors = {
+    /**
+     * Validation Error
+     */
+    422: HTTPValidationError;
+};
+
+export type questionsCreateQuestionError = questionsCreateQuestionErrors[keyof questionsCreateQuestionErrors];
+
+export type questionsCreateQuestionResponses = {
+    /**
+     * Successful Response
+     */
+    201: QuestionPublic;
+};
+
+export type questionsCreateQuestionResponse = questionsCreateQuestionResponses[keyof questionsCreateQuestionResponses];
+
+export type questionsReadQuestionsForReviewData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/questions/review';
+};
+
+export type questionsReadQuestionsForReviewResponses = {
+    /**
+     * Response Questions-Read Questions For Review
+     *
+     * Successful Response
+     */
+    200: Array<QuestionPublic>;
+};
+
+export type questionsReadQuestionsForReviewResponse = questionsReadQuestionsForReviewResponses[keyof questionsReadQuestionsForReviewResponses];
+
+export type questionsDeleteQuestionData = {
+    body?: never;
+    path: {
+        /**
+         * Question Id
+         */
+        question_id: string;
+    };
+    query?: never;
+    url: '/api/v1/questions/{question_id}';
+};
+
+export type questionsDeleteQuestionErrors = {
+    /**
+     * Validation Error
+     */
+    422: HTTPValidationError;
+};
+
+export type questionsDeleteQuestionError = questionsDeleteQuestionErrors[keyof questionsDeleteQuestionErrors];
+
+export type questionsDeleteQuestionResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type questionsDeleteQuestionResponse = questionsDeleteQuestionResponses[keyof questionsDeleteQuestionResponses];
+
+export type questionsReadQuestionData = {
+    body?: never;
+    path: {
+        /**
+         * Question Id
+         */
+        question_id: string;
+    };
+    query?: never;
+    url: '/api/v1/questions/{question_id}';
+};
+
+export type questionsReadQuestionErrors = {
+    /**
+     * Validation Error
+     */
+    422: HTTPValidationError;
+};
+
+export type questionsReadQuestionError = questionsReadQuestionErrors[keyof questionsReadQuestionErrors];
+
+export type questionsReadQuestionResponses = {
+    /**
+     * Successful Response
+     */
+    200: QuestionPublic;
+};
+
+export type questionsReadQuestionResponse = questionsReadQuestionResponses[keyof questionsReadQuestionResponses];
+
+export type questionsUpdateQuestionData = {
+    body: QuestionUpdate;
+    path: {
+        /**
+         * Question Id
+         */
+        question_id: string;
+    };
+    query?: never;
+    url: '/api/v1/questions/{question_id}';
+};
+
+export type questionsUpdateQuestionErrors = {
+    /**
+     * Validation Error
+     */
+    422: HTTPValidationError;
+};
+
+export type questionsUpdateQuestionError = questionsUpdateQuestionErrors[keyof questionsUpdateQuestionErrors];
+
+export type questionsUpdateQuestionResponses = {
+    /**
+     * Successful Response
+     */
+    200: QuestionPublic;
+};
+
+export type questionsUpdateQuestionResponse = questionsUpdateQuestionResponses[keyof questionsUpdateQuestionResponses];
+
+export type questionsReviewQuestionData = {
+    body: QuestionReview;
+    path: {
+        /**
+         * Question Id
+         */
+        question_id: string;
+    };
+    query?: never;
+    url: '/api/v1/questions/{question_id}/review';
+};
+
+export type questionsReviewQuestionErrors = {
+    /**
+     * Validation Error
+     */
+    422: HTTPValidationError;
+};
+
+export type questionsReviewQuestionError = questionsReviewQuestionErrors[keyof questionsReviewQuestionErrors];
+
+export type questionsReviewQuestionResponses = {
+    /**
+     * Successful Response
+     */
+    200: QuestionPublic;
+};
+
+export type questionsReviewQuestionResponse = questionsReviewQuestionResponses[keyof questionsReviewQuestionResponses];
+
+export type subjectsReadSubjectsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/subjects/';
+};
+
+export type subjectsReadSubjectsResponses = {
+    /**
+     * Response Subjects-Read Subjects
+     *
+     * Successful Response
+     */
+    200: Array<SubjectPublic>;
+};
+
+export type subjectsReadSubjectsResponse = subjectsReadSubjectsResponses[keyof subjectsReadSubjectsResponses];
+
+export type subjectsCreateSubjectData = {
+    body: SubjectCreate;
+    path?: never;
+    query?: never;
+    url: '/api/v1/subjects/';
+};
+
+export type subjectsCreateSubjectErrors = {
+    /**
+     * Validation Error
+     */
+    422: HTTPValidationError;
+};
+
+export type subjectsCreateSubjectError = subjectsCreateSubjectErrors[keyof subjectsCreateSubjectErrors];
+
+export type subjectsCreateSubjectResponses = {
+    /**
+     * Successful Response
+     */
+    201: SubjectPublic;
+};
+
+export type subjectsCreateSubjectResponse = subjectsCreateSubjectResponses[keyof subjectsCreateSubjectResponses];
+
+export type subjectsDeleteSubjectData = {
+    body?: never;
+    path: {
+        /**
+         * Subject Id
+         */
+        subject_id: string;
+    };
+    query?: never;
+    url: '/api/v1/subjects/{subject_id}';
+};
+
+export type subjectsDeleteSubjectErrors = {
+    /**
+     * Validation Error
+     */
+    422: HTTPValidationError;
+};
+
+export type subjectsDeleteSubjectError = subjectsDeleteSubjectErrors[keyof subjectsDeleteSubjectErrors];
+
+export type subjectsDeleteSubjectResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type subjectsDeleteSubjectResponse = subjectsDeleteSubjectResponses[keyof subjectsDeleteSubjectResponses];
+
+export type subjectsReadSubjectData = {
+    body?: never;
+    path: {
+        /**
+         * Subject Id
+         */
+        subject_id: string;
+    };
+    query?: never;
+    url: '/api/v1/subjects/{subject_id}';
+};
+
+export type subjectsReadSubjectErrors = {
+    /**
+     * Validation Error
+     */
+    422: HTTPValidationError;
+};
+
+export type subjectsReadSubjectError = subjectsReadSubjectErrors[keyof subjectsReadSubjectErrors];
+
+export type subjectsReadSubjectResponses = {
+    /**
+     * Successful Response
+     */
+    200: SubjectPublic;
+};
+
+export type subjectsReadSubjectResponse = subjectsReadSubjectResponses[keyof subjectsReadSubjectResponses];
+
+export type subjectsUpdateSubjectData = {
+    body: SubjectUpdate;
+    path: {
+        /**
+         * Subject Id
+         */
+        subject_id: string;
+    };
+    query?: never;
+    url: '/api/v1/subjects/{subject_id}';
+};
+
+export type subjectsUpdateSubjectErrors = {
+    /**
+     * Validation Error
+     */
+    422: HTTPValidationError;
+};
+
+export type subjectsUpdateSubjectError = subjectsUpdateSubjectErrors[keyof subjectsUpdateSubjectErrors];
+
+export type subjectsUpdateSubjectResponses = {
+    /**
+     * Successful Response
+     */
+    200: SubjectPublic;
+};
+
+export type subjectsUpdateSubjectResponse = subjectsUpdateSubjectResponses[keyof subjectsUpdateSubjectResponses];
+
+export type topicsReadTopicsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Subject Id
+         */
+        subject_id?: string | null;
+    };
+    url: '/api/v1/topics/';
+};
+
+export type topicsReadTopicsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HTTPValidationError;
+};
+
+export type topicsReadTopicsError = topicsReadTopicsErrors[keyof topicsReadTopicsErrors];
+
+export type topicsReadTopicsResponses = {
+    /**
+     * Response Topics-Read Topics
+     *
+     * Successful Response
+     */
+    200: Array<TopicPublic>;
+};
+
+export type topicsReadTopicsResponse = topicsReadTopicsResponses[keyof topicsReadTopicsResponses];
+
+export type topicsCreateTopicData = {
+    body: TopicCreate;
+    path?: never;
+    query?: never;
+    url: '/api/v1/topics/';
+};
+
+export type topicsCreateTopicErrors = {
+    /**
+     * Validation Error
+     */
+    422: HTTPValidationError;
+};
+
+export type topicsCreateTopicError = topicsCreateTopicErrors[keyof topicsCreateTopicErrors];
+
+export type topicsCreateTopicResponses = {
+    /**
+     * Successful Response
+     */
+    201: TopicPublic;
+};
+
+export type topicsCreateTopicResponse = topicsCreateTopicResponses[keyof topicsCreateTopicResponses];
+
+export type topicsDeleteTopicData = {
+    body?: never;
+    path: {
+        /**
+         * Topic Id
+         */
+        topic_id: string;
+    };
+    query?: never;
+    url: '/api/v1/topics/{topic_id}';
+};
+
+export type topicsDeleteTopicErrors = {
+    /**
+     * Validation Error
+     */
+    422: HTTPValidationError;
+};
+
+export type topicsDeleteTopicError = topicsDeleteTopicErrors[keyof topicsDeleteTopicErrors];
+
+export type topicsDeleteTopicResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type topicsDeleteTopicResponse = topicsDeleteTopicResponses[keyof topicsDeleteTopicResponses];
+
+export type topicsReadTopicData = {
+    body?: never;
+    path: {
+        /**
+         * Topic Id
+         */
+        topic_id: string;
+    };
+    query?: never;
+    url: '/api/v1/topics/{topic_id}';
+};
+
+export type topicsReadTopicErrors = {
+    /**
+     * Validation Error
+     */
+    422: HTTPValidationError;
+};
+
+export type topicsReadTopicError = topicsReadTopicErrors[keyof topicsReadTopicErrors];
+
+export type topicsReadTopicResponses = {
+    /**
+     * Successful Response
+     */
+    200: TopicPublic;
+};
+
+export type topicsReadTopicResponse = topicsReadTopicResponses[keyof topicsReadTopicResponses];
+
+export type topicsUpdateTopicData = {
+    body: TopicUpdate;
+    path: {
+        /**
+         * Topic Id
+         */
+        topic_id: string;
+    };
+    query?: never;
+    url: '/api/v1/topics/{topic_id}';
+};
+
+export type topicsUpdateTopicErrors = {
+    /**
+     * Validation Error
+     */
+    422: HTTPValidationError;
+};
+
+export type topicsUpdateTopicError = topicsUpdateTopicErrors[keyof topicsUpdateTopicErrors];
+
+export type topicsUpdateTopicResponses = {
+    /**
+     * Successful Response
+     */
+    200: TopicPublic;
+};
+
+export type topicsUpdateTopicResponse = topicsUpdateTopicResponses[keyof topicsUpdateTopicResponses];
+
+export type topicsCreateTopicsData = {
+    body: TopicBulkCreateRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/topics/bulk';
+};
+
+export type topicsCreateTopicsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HTTPValidationError;
+};
+
+export type topicsCreateTopicsError = topicsCreateTopicsErrors[keyof topicsCreateTopicsErrors];
+
+export type topicsCreateTopicsResponses = {
+    /**
+     * Successful Response
+     */
+    201: TopicBulkCreateResponse;
+};
+
+export type topicsCreateTopicsResponse = topicsCreateTopicsResponses[keyof topicsCreateTopicsResponses];
+
+export type topicsGenerateTopicsData = {
+    body: TopicGenerationRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/topics/generate';
+};
+
+export type topicsGenerateTopicsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HTTPValidationError;
+};
+
+export type topicsGenerateTopicsError = topicsGenerateTopicsErrors[keyof topicsGenerateTopicsErrors];
+
+export type topicsGenerateTopicsResponses = {
+    /**
+     * Successful Response
+     */
+    200: TopicGenerationResponse;
+};
+
+export type topicsGenerateTopicsResponse = topicsGenerateTopicsResponses[keyof topicsGenerateTopicsResponses];
 
 export type usersReadUsersData = {
     body?: never;
