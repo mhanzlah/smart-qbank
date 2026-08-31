@@ -1,6 +1,9 @@
 import httpx
 
-LLAMA_SERVER_URL = "http://127.0.0.1:8080"
+from app.core.config import settings
+
+LLAMA_SERVER_URL = settings.LLAMA_SERVER_URL
+LLAMA_TIMEOUT = 300.0
 
 
 class LlamaService:
@@ -9,7 +12,7 @@ class LlamaService:
         prompt: str,
         system_prompt: str | None = None,
         temperature: float = 0.2,
-        max_tokens=2048,
+        max_tokens: int = 2048,
     ) -> str:
         messages = []
 
@@ -28,7 +31,7 @@ class LlamaService:
             }
         )
 
-        async with httpx.AsyncClient(timeout=300.0) as client:
+        async with httpx.AsyncClient(timeout=LLAMA_TIMEOUT) as client:
             response = await client.post(
                 f"{LLAMA_SERVER_URL}/v1/chat/completions",
                 json={
@@ -42,4 +45,7 @@ class LlamaService:
 
         data = response.json()
 
-        return data["choices"][0]["message"]["content"]
+        try:
+            return data["choices"][0]["message"]["content"]
+        except (KeyError, IndexError, TypeError) as exc:
+            raise ValueError("Invalid response received from Llama server.") from exc
