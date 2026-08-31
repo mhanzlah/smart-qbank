@@ -41,11 +41,11 @@ const formSchema = z.object({
 
   cognitive_levels: z
     .string()
-    .optional(),
+    .min(1, "At least one cognitive level is required"),
 
-  mcq_focus: z.string().optional(),
+  mcq_focus: z.string().min(1, "MCQ focus is required"),
 
-  key_areas: z.string().optional(),
+  key_areas: z.string().min(1, "At least one key area is required"),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -106,14 +106,14 @@ const AddTopic = ({ subjectId, disabled = false }: AddTopicProps) => {
       cognitive_levels: data.cognitive_levels
         .split("\n")
         .map((item) => item.trim())
-        .filter(Boolean) || null,
+        .filter(Boolean),
 
-      mcq_focus: data.mcq_focus || null,
+      mcq_focus: data.mcq_focus,
 
       key_areas: data.key_areas
         .split("\n")
         .map((item) => item.trim())
-        .filter(Boolean) || null,
+        .filter(Boolean),
 
       // Automatically comes from the selected subject.
       subject_id: subjectId,
@@ -191,6 +191,7 @@ const AddTopic = ({ subjectId, disabled = false }: AddTopicProps) => {
                   <FormItem>
                     <FormLabel>
                       Cognitive Levels{" "}
+                      <span className="text-destructive">*</span>
                     </FormLabel>
 
                     <FormControl>
@@ -215,7 +216,7 @@ Apply`}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      MCQ Focus
+                      MCQ Focus <span className="text-destructive">*</span>
                     </FormLabel>
 
                     <FormControl>
@@ -237,7 +238,7 @@ Apply`}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Key Areas
+                      Key Areas <span className="text-destructive">*</span>
                     </FormLabel>
 
                     <FormControl>
