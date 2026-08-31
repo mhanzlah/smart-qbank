@@ -27,38 +27,6 @@
 - ✅ Tests with [Pytest](https://pytest.org).
 - 🏭 CI (continuous integration) and CD (continuous deployment) based on GitHub Actions.
 
-### Dashboard Login
-
-![Dashboard login screenshot](img/login.png)
-
-### Dashboard - Admin
-
-![Admin dashboard screenshot](img/dashboard.png)
-
-### Dashboard - Items
-
-![Items dashboard screenshot](img/dashboard-items.png)
-
-### Dashboard - Dark Mode
-
-![Dark mode dashboard screenshot](img/dashboard-dark.png)
-
-### React Email Templates
-
-![Email templates screenshot](img/react-email.png)
-
-### Mailpit - Local Email Testing
-
-![Mailpit screenshot](img/mailpit.png)
-
-### Interactive API Documentation
-
-![API docs](img/docs.png)
-
-## How to Use It
-
-Click the **Use this template** button at the top of this page to create a new repository.
-
 ## Backend Development
 
 Backend docs: [backend/README.md](./backend/README.md).
@@ -66,6 +34,16 @@ Backend docs: [backend/README.md](./backend/README.md).
 ## Frontend Development
 
 Frontend docs: [frontend/README.md](./frontend/README.md).
+
+## Llama
+
+```bash
+llama-server \
+  -hf google/gemma-4-E2B-it-qat-q4_0-gguf:Q4_0 \
+  --host 127.0.0.1 \
+  --port 8080 \
+  -t 8
+```
 
 ## Deployment
 
