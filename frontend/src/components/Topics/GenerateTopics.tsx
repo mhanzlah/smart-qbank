@@ -21,9 +21,13 @@ import { handleError } from "@/utils";
 
 interface GenerateTopicsProps {
   subjectId: string;
+  disabled?: boolean;
 }
 
-const GenerateTopics = ({ subjectId }: GenerateTopicsProps) => {
+const GenerateTopics = ({
+  subjectId,
+  disabled = false,
+}: GenerateTopicsProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [numberOfTopics, setNumberOfTopics] = useState(10);
   const [topics, setTopics] = useState<TopicGenerationResponse["topics"]>([]);
@@ -141,7 +145,7 @@ const GenerateTopics = ({ subjectId }: GenerateTopicsProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogTrigger asChild>
-        <Button variant="outline">
+        <Button variant="outline" disabled={disabled}>
           <Sparkles className="mr-2 h-4 w-4" />
           Generate Topics
         </Button>

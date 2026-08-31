@@ -137,7 +137,7 @@ function Topics() {
             <>
               <AddTopic subjectId={subjectId} disabled={!subjectId} />
 
-              <GenerateTopics subjectId={subjectId} />
+              <GenerateTopics subjectId={subjectId} disabled={!subjectId} />
             </>
           )}
         </div>
