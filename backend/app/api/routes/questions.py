@@ -106,14 +106,44 @@ def create_question(
 async def generate_questions(
     request: QuestionGenerationRequest,
     session: SessionDep,
-    # current_user: CurrentEditor,
+    current_user: CurrentEditor,
 ) -> QuestionGenerationResponse:
+
     service = QuestionGenerationService()
 
-    return await service.generate(
+    result = await service.generate(
         session=session,
-        request=request,
+        topic_id=request.topic_id,
+        difficulty_distribution=request.difficulty_distribution,
     )
+
+    # ----------------------------------------------------------------------
+    # Save only after ALL questions have been generated and validated
+    # ----------------------------------------------------------------------
+
+    questions: list[Question] = []
+
+    for generated in result.questions:
+        question = Question(
+            question=generated.question,
+            options=generated.options,
+            correct_option=generated.correct_option,
+            difficulty=generated.difficulty,
+            cognitive_level=generated.cognitive_level,
+            explanation=generated.explanation,
+            topic_id=request.topic_id,
+            is_validated=True,
+        )
+
+        questions.append(question)
+
+    session.add_all(questions)
+    session.commit()
+
+    for question in questions:
+        session.refresh(question)
+
+    return result
 
 
 # --------------------------------------------------------------------------
