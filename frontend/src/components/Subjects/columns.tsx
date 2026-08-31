@@ -2,10 +2,21 @@ import type { ColumnDef } from "@tanstack/react-table";
 
 import type { SubjectPublic } from "@/client";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import { SubjectActionsMenu } from "./SubjectActionsMenu";
 
-export const columns: ColumnDef<SubjectPublic>[] = [
+export const columns = (canManage: boolean): ColumnDef<SubjectPublic>[] => [
+  {
+    accessorKey: "id",
+    header: "ID",
+    cell: ({ row }) => (
+      <span
+        className="font-mono text-xs text-muted-foreground"
+        title={row.original.id}
+      >
+        {row.original.id.slice(0, 8)}
+      </span>
+    ),
+  },
   {
     accessorKey: "name",
     header: "Subject",
@@ -16,21 +27,6 @@ export const columns: ColumnDef<SubjectPublic>[] = [
     header: "Code",
     cell: ({ row }) => (
       <Badge variant="outline">{row.original.code || "N/A"}</Badge>
-    ),
-  },
-  {
-    accessorKey: "clo",
-    header: "CLO",
-    cell: ({ row }) => (
-      <div
-        className={cn(
-          "max-w-md truncate",
-          !row.original.clo && "text-muted-foreground",
-        )}
-        title={row.original.clo || undefined}
-      >
-        {row.original.clo || "No CLO provided"}
-      </div>
     ),
   },
   {
@@ -50,13 +46,20 @@ export const columns: ColumnDef<SubjectPublic>[] = [
       );
     },
   },
-  {
-    id: "actions",
-    header: () => <span className="sr-only">Actions</span>,
-    cell: ({ row }) => (
-      <div className="flex justify-end">
-        <SubjectActionsMenu subject={row.original} />
-      </div>
-    ),
-  },
+  ...(canManage
+    ? [
+        {
+          id: "actions",
+          header: () => <span className="sr-only">Actions</span>,
+          cell: ({ row }) => (
+            <div
+              className="flex justify-end"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <SubjectActionsMenu subject={row.original} />
+            </div>
+          ),
+        } satisfies ColumnDef<SubjectPublic>,
+      ]
+    : []),
 ];

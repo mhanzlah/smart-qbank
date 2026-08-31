@@ -35,6 +35,24 @@ export type Body_login_login_access_token = {
 };
 
 /**
+ * DifficultyDistribution
+ */
+export type DifficultyDistribution = {
+    /**
+     * Easy
+     */
+    easy?: number;
+    /**
+     * Medium
+     */
+    medium?: number;
+    /**
+     * Hard
+     */
+    hard?: number;
+};
+
+/**
  * GeneratedTopic
  */
 export type GeneratedTopic = {
@@ -153,6 +171,32 @@ export type QuestionCreate = {
 export type QuestionDifficulty = 'easy' | 'medium' | 'hard';
 
 /**
+ * QuestionGenerationRequest
+ */
+export type QuestionGenerationRequest = {
+    /**
+     * Topic Ids
+     */
+    topic_ids: Array<string>;
+    difficulty_distribution?: DifficultyDistribution;
+};
+
+/**
+ * QuestionGenerationResponse
+ */
+export type QuestionGenerationResponse = {
+    /**
+     * Questions
+     */
+    questions: Array<QuestionPublic>;
+    /**
+     * Total Generated
+     */
+    total_generated: number;
+    difficulty_distribution: DifficultyDistribution;
+};
+
+/**
  * QuestionPublic
  */
 export type QuestionPublic = {
@@ -193,7 +237,7 @@ export type QuestionPublic = {
     /**
      * Created At
      */
-    created_at?: string | null;
+    created_at?: unknown | null;
 };
 
 /**
@@ -927,6 +971,31 @@ export type questionsUpdateQuestionResponses = {
 };
 
 export type questionsUpdateQuestionResponse = questionsUpdateQuestionResponses[keyof questionsUpdateQuestionResponses];
+
+export type questionsGenerateQuestionsData = {
+    body: QuestionGenerationRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/questions/generate';
+};
+
+export type questionsGenerateQuestionsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HTTPValidationError;
+};
+
+export type questionsGenerateQuestionsError = questionsGenerateQuestionsErrors[keyof questionsGenerateQuestionsErrors];
+
+export type questionsGenerateQuestionsResponses = {
+    /**
+     * Successful Response
+     */
+    201: QuestionGenerationResponse;
+};
+
+export type questionsGenerateQuestionsResponse = questionsGenerateQuestionsResponses[keyof questionsGenerateQuestionsResponses];
 
 export type questionsReviewQuestionData = {
     body: QuestionReview;

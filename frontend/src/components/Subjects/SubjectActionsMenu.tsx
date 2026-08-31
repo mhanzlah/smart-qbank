@@ -20,7 +20,7 @@ export const SubjectActionsMenu = ({ subject }: SubjectActionsMenuProps) => {
   const [open, setOpen] = useState(false);
   const { user: currentUser } = useAuth();
 
-  if (!currentUser?.is_superuser || currentUser.role !== "editor") {
+  if (currentUser?.is_superuser !== true && currentUser?.role !== "editor") {
     return null;
   }
 

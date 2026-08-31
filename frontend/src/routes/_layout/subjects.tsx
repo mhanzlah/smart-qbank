@@ -1,12 +1,14 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 
+import type { SubjectPublic } from "@/client";
 import { SubjectsService, UsersService } from "@/client";
-import AddSubject from "@/components/Subjects/AddSubject";
-import { columns } from "@/components/Subjects/columns";
 import { DataTable } from "@/components/Common/DataTable";
 import PendingSubjects from "@/components/Pending/PendingSubjects";
+import AddSubject from "@/components/Subjects/AddSubject";
+import { columns } from "@/components/Subjects/columns";
+import SubjectDetails from "@/components/Subjects/SubjectDetails";
 import useAuth from "@/hooks/useAuth";
 
 function getSubjectsQueryOptions() {
@@ -38,16 +40,34 @@ export const Route = createFileRoute("/_layout/subjects")({
   }),
 });
 
-function SubjectsTableContent() {
+function SubjectsTableContent({
+  onRowClick,
+  canManage,
+}: {
+  onRowClick: (subject: SubjectPublic) => void;
+  canManage: boolean;
+}) {
   const { data: subjects } = useSuspenseQuery(getSubjectsQueryOptions());
 
-  return <DataTable columns={columns} data={subjects ?? []} />;
+  return (
+    <DataTable
+      columns={columns(canManage)}
+      data={subjects ?? []}
+      onRowClick={onRowClick}
+    />
+  );
 }
 
-function SubjectsTable() {
+function SubjectsTable({
+  onRowClick,
+  canManage,
+}: {
+  onRowClick: (subject: SubjectPublic) => void;
+  canManage: boolean;
+}) {
   return (
     <Suspense fallback={<PendingSubjects />}>
-      <SubjectsTableContent />
+      <SubjectsTableContent onRowClick={onRowClick} canManage={canManage} />
     </Suspense>
   );
 }
@@ -55,7 +75,12 @@ function SubjectsTable() {
 function Subjects() {
   const { user: currentUser } = useAuth();
 
-  const isSuperuser = currentUser?.is_superuser === true;
+  const [selectedSubject, setSelectedSubject] = useState<SubjectPublic | null>(
+    null,
+  );
+
+  const canManage =
+    currentUser?.is_superuser === true || currentUser?.role === "editor";
 
   return (
     <div className="flex flex-col gap-6">
@@ -68,10 +93,20 @@ function Subjects() {
           </p>
         </div>
 
-        {isSuperuser && <AddSubject />}
+        {canManage && <AddSubject />}
       </div>
 
-      <SubjectsTable />
+      <SubjectsTable onRowClick={setSelectedSubject} canManage={canManage} />
+
+      <SubjectDetails
+        subject={selectedSubject}
+        open={selectedSubject !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedSubject(null);
+          }
+        }}
+      />
     </div>
   );
 }

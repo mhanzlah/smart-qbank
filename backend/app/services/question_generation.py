@@ -6,11 +6,7 @@ from sqlmodel import Session
 
 from app.models.subject import Subject
 from app.models.topic import Topic
-from app.schemas.question import (
-    DifficultyDistribution,
-    GeneratedQuestion,
-    QuestionGenerationResponse,
-)
+from app.schemas.question import DifficultyDistribution, GeneratedQuestion
 from app.services.llama import LlamaService
 
 
@@ -44,11 +40,7 @@ class QuestionGenerationService:
         topic_id: uuid.UUID,
         difficulty_distribution: DifficultyDistribution,
         max_tokens: int = 4096,
-    ) -> QuestionGenerationResponse:
-
-        # ------------------------------------------------------------------
-        # Get topic
-        # ------------------------------------------------------------------
+    ) -> list[GeneratedQuestion]:
 
         topic = session.get(Topic, topic_id)
 
@@ -58,10 +50,6 @@ class QuestionGenerationService:
                 detail="Topic not found",
             )
 
-        # ------------------------------------------------------------------
-        # Get subject
-        # ------------------------------------------------------------------
-
         subject = session.get(Subject, topic.subject_id)
 
         if not subject:
@@ -70,15 +58,13 @@ class QuestionGenerationService:
                 detail="Subject not found",
             )
 
-        # ------------------------------------------------------------------
-        # Calculate total from distribution
-        # ------------------------------------------------------------------
+        distribution = {
+            "easy": difficulty_distribution.easy,
+            "medium": difficulty_distribution.medium,
+            "hard": difficulty_distribution.hard,
+        }
 
-        total = (
-            difficulty_distribution.easy
-            + difficulty_distribution.medium
-            + difficulty_distribution.hard
-        )
+        total = sum(distribution.values())
 
         if total <= 0:
             raise HTTPException(
@@ -88,18 +74,7 @@ class QuestionGenerationService:
 
         generated_questions: list[GeneratedQuestion] = []
 
-        # ------------------------------------------------------------------
-        # Generate each difficulty separately
-        # ------------------------------------------------------------------
-
-        distribution = {
-            "easy": difficulty_distribution.easy,
-            "medium": difficulty_distribution.medium,
-            "hard": difficulty_distribution.hard,
-        }
-
         for difficulty, count in distribution.items():
-
             if count == 0:
                 continue
 
@@ -115,10 +90,6 @@ class QuestionGenerationService:
                 GeneratedQuestion.model_validate(question) for question in questions
             )
 
-        # ------------------------------------------------------------------
-        # Final validation
-        # ------------------------------------------------------------------
-
         if len(generated_questions) != total:
             raise HTTPException(
                 status_code=status.HTTP_502_BAD_GATEWAY,
@@ -127,10 +98,6 @@ class QuestionGenerationService:
                     f"instead of {total}."
                 ),
             )
-
-        # ------------------------------------------------------------------
-        # Validate difficulty distribution
-        # ------------------------------------------------------------------
 
         actual_distribution = {
             "easy": 0,
@@ -153,10 +120,7 @@ class QuestionGenerationService:
                     ),
                 )
 
-        return QuestionGenerationResponse(  # type: ignore
-            questions=generated_questions,
-            total_generated=len(generated_questions),
-        )
+        return generated_questions
 
     async def _generate_for_difficulty(
         self,
@@ -331,10 +295,6 @@ STRICT RULES:
         if not output:
             raise ValueError("LLM returned an empty response.")
 
-        # ------------------------------------------------------------------
-        # Remove markdown code fences
-        # ------------------------------------------------------------------
-
         if output.startswith("```"):
             lines = output.splitlines()
 
@@ -346,10 +306,6 @@ STRICT RULES:
 
             output = "\n".join(lines).strip()
 
-        # ------------------------------------------------------------------
-        # Extract JSON array
-        # ------------------------------------------------------------------
-
         start = output.find("[")
         end = output.rfind("]")
 
@@ -358,13 +314,8 @@ STRICT RULES:
 
         output = output[start : end + 1]
 
-        # ------------------------------------------------------------------
-        # Parse JSON
-        # ------------------------------------------------------------------
-
         try:
             data = json.loads(output)
-
         except json.JSONDecodeError as exc:
             raise ValueError(f"LLM returned invalid JSON: {exc}") from exc
 
@@ -377,30 +328,24 @@ STRICT RULES:
         if not data:
             raise ValueError("LLM returned an empty array.")
 
-        # ------------------------------------------------------------------
-        # Validate count
-        # ------------------------------------------------------------------
-
         if len(data) != expected_count:
             raise ValueError(
                 f"LLM returned {len(data)} questions, "
                 f"but {expected_count} were requested."
             )
 
-        # ------------------------------------------------------------------
-        # Validate each question
-        # ------------------------------------------------------------------
-
         seen_questions: set[str] = set()
 
-        for index, question in enumerate(data):
+        normalized_levels = {
+            level.strip().lower() for level in (cognitive_levels or [])
+        }
 
+        for index, question in enumerate(data):
             question_number = index + 1
 
             if not isinstance(question, dict):
                 raise ValueError(f"Question {question_number} must be a JSON object.")
 
-            # Fields
             fields = set(question.keys())
 
             if fields != cls.REQUIRED_FIELDS:
@@ -420,7 +365,6 @@ STRICT RULES:
                     + "; ".join(details)
                 )
 
-            # Question text
             question_text = question["question"]
 
             if not isinstance(question_text, str):
@@ -438,7 +382,6 @@ STRICT RULES:
 
             seen_questions.add(normalized_question)
 
-            # Options
             options = question["options"]
 
             if not isinstance(options, dict):
@@ -460,7 +403,6 @@ STRICT RULES:
             if any(not value.strip() for value in options.values()):
                 raise ValueError(f"Question {question_number} options cannot be empty.")
 
-            # Correct option
             correct_option = question["correct_option"]
 
             if correct_option not in cls.OPTION_KEYS:
@@ -469,7 +411,6 @@ STRICT RULES:
                     f"correct_option: {correct_option}"
                 )
 
-            # Difficulty
             difficulty = question["difficulty"]
 
             if difficulty != expected_difficulty:
@@ -478,7 +419,6 @@ STRICT RULES:
                     f"'{difficulty}', expected '{expected_difficulty}'."
                 )
 
-            # Cognitive level
             cognitive_level = question["cognitive_level"]
 
             if not isinstance(cognitive_level, str):
@@ -486,24 +426,20 @@ STRICT RULES:
                     f"Question {question_number} cognitive_level " "must be a string."
                 )
 
-            if not cognitive_level.strip():
+            cognitive_level = cognitive_level.strip()
+
+            if not cognitive_level:
                 raise ValueError(
                     f"Question {question_number} cognitive_level " "cannot be empty."
                 )
 
-            if cognitive_levels:
-                normalized_levels = {
-                    level.strip().lower() for level in cognitive_levels
-                }
+            if normalized_levels and cognitive_level.lower() not in normalized_levels:
+                raise ValueError(
+                    f"Question {question_number} uses cognitive "
+                    f"level '{cognitive_level}', which is not allowed "
+                    "for this topic."
+                )
 
-                if cognitive_level.strip().lower() not in normalized_levels:
-                    raise ValueError(
-                        f"Question {question_number} uses cognitive "
-                        f"level '{cognitive_level}', which is not "
-                        "allowed for this topic."
-                    )
-
-            # Explanation
             explanation = question["explanation"]
 
             if not isinstance(explanation, str):

@@ -18,7 +18,7 @@ class QuestionReviewStatus(str, Enum):
 
 class QuestionBase(BaseModel):
     question: str = Field(min_length=1, max_length=500)
-    options: list[str] = Field(min_length=2, max_length=5)
+    options: list[str] = Field(min_length=5, max_length=5)
     correct_option: str = Field(min_length=1, max_length=1)
     difficulty: QuestionDifficulty
     cognitive_level: str = Field(min_length=1, max_length=100)
@@ -32,11 +32,26 @@ class QuestionCreate(QuestionBase):
 
 class QuestionUpdate(BaseModel):
     question: str | None = Field(default=None, min_length=1, max_length=500)
-    options: list[str] | None = Field(default=None, min_length=2, max_length=5)
-    correct_option: str | None = Field(default=None, min_length=1, max_length=1)
+    options: list[str] | None = Field(
+        default=None,
+        min_length=5,
+        max_length=5,
+    )
+    correct_option: str | None = Field(
+        default=None,
+        min_length=1,
+        max_length=1,
+    )
     difficulty: QuestionDifficulty | None = None
-    cognitive_level: str | None = Field(default=None, max_length=100)
-    explanation: str | None = Field(default=None, min_length=1, max_length=600)
+    cognitive_level: str | None = Field(
+        default=None,
+        max_length=100,
+    )
+    explanation: str | None = Field(
+        default=None,
+        min_length=1,
+        max_length=600,
+    )
     topic_id: uuid.UUID | None = None
 
 
@@ -59,9 +74,9 @@ class QuestionPublic(QuestionBase):
 
 
 class DifficultyDistribution(BaseModel):
-    easy: int = Field(default=5, ge=0, le=50)
-    medium: int = Field(default=3, ge=0, le=50)
-    hard: int = Field(default=2, ge=0, le=50)
+    easy: int = Field(default=5, ge=0, le=1000)
+    medium: int = Field(default=3, ge=0, le=1000)
+    hard: int = Field(default=2, ge=0, le=1000)
 
     @property
     def total(self) -> int:
@@ -69,19 +84,20 @@ class DifficultyDistribution(BaseModel):
 
     @model_validator(mode="after")
     def validate_total(self):
-        if self.total < 1:
+        if self.total == 0:
             raise ValueError(
-                "Difficulty distribution must contain at least one question"
+                "At least one difficulty must contain more than 0 questions."
             )
 
-        if self.total > 50:
-            raise ValueError("Total number of questions cannot exceed 50")
+        if self.total > 1000:
+            raise ValueError("Total number of questions cannot exceed 1000.")
 
         return self
 
 
 class QuestionGenerationRequest(BaseModel):
-    topic_id: uuid.UUID
+    topic_ids: list[uuid.UUID] = Field(min_length=1)
+
     difficulty_distribution: DifficultyDistribution = Field(
         default_factory=DifficultyDistribution,
     )
@@ -91,7 +107,7 @@ class GeneratedQuestion(BaseModel):
     question: str = Field(min_length=1, max_length=500)
 
     options: dict[str, str] = Field(
-        min_length=2,
+        min_length=5,
         max_length=5,
     )
 
@@ -116,4 +132,3 @@ class GeneratedQuestion(BaseModel):
 class QuestionGenerationResponse(BaseModel):
     questions: list[QuestionPublic]
     total_generated: int
-    difficulty_distribution: DifficultyDistribution

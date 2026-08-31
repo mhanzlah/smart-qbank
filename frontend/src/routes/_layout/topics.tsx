@@ -1,13 +1,15 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 
+import type { TopicPublic } from "@/client";
 import { SubjectsService, TopicsService, UsersService } from "@/client";
+import { DataTable } from "@/components/Common/DataTable";
+import PendingTopics from "@/components/Pending/PendingTopics";
 import AddTopic from "@/components/Topics/AddTopic";
 import GenerateTopics from "@/components/Topics/GenerateTopics";
 import { columns } from "@/components/Topics/columns";
-import { DataTable } from "@/components/Common/DataTable";
-import PendingTopics from "@/components/Pending/PendingTopics";
+import TopicDetails from "@/components/Topics/TopicDetails";
 import useAuth from "@/hooks/useAuth";
 import {
   Select,
@@ -64,16 +66,37 @@ export const Route = createFileRoute("/_layout/topics")({
   }),
 });
 
-function TopicsTableContent({ subjectId }: { subjectId: string }) {
+function TopicsTableContent({
+  subjectId,
+  onRowClick,
+}: {
+  subjectId: string;
+  onRowClick: (topic: TopicPublic) => void;
+}) {
   const { data: topics } = useSuspenseQuery(getTopicsQueryOptions(subjectId));
 
-  return <DataTable columns={columns} data={topics ?? []} />;
+  return (
+    <DataTable
+      columns={columns}
+      data={topics ?? []}
+      onRowClick={onRowClick}
+    />
+  );
 }
 
-function TopicsTable({ subjectId }: { subjectId: string }) {
+function TopicsTable({
+  subjectId,
+  onRowClick,
+}: {
+  subjectId: string;
+  onRowClick: (topic: TopicPublic) => void;
+}) {
   return (
     <Suspense fallback={<PendingTopics />}>
-      <TopicsTableContent subjectId={subjectId} />
+      <TopicsTableContent
+        subjectId={subjectId}
+        onRowClick={onRowClick}
+      />
     </Suspense>
   );
 }
@@ -87,9 +110,11 @@ function Topics() {
 
   const { data: subjects } = useSuspenseQuery(getSubjectsQueryOptions());
 
-  const isSuperuser = currentUser?.is_superuser === true;
+  const [selectedTopic, setSelectedTopic] =
+    useState<TopicPublic | null>(null);
 
-  const canManageTopics = isSuperuser;
+  const canManageTopics =
+    currentUser?.is_superuser === true || currentUser?.role === "editor";
 
   const handleSubjectChange = (value: string) => {
     const newSubjectId = value === "all" ? "" : value;
@@ -135,16 +160,25 @@ function Topics() {
 
           {canManageTopics && (
             <>
-              <AddTopic subjectId={subjectId} disabled={!subjectId} />
+              <GenerateTopics
+                subjectId={subjectId}
+                disabled={!subjectId}
+              />
 
-              <GenerateTopics subjectId={subjectId} disabled={!subjectId} />
+              <AddTopic
+                subjectId={subjectId}
+                disabled={!subjectId}
+              />
             </>
           )}
         </div>
       </div>
 
       {subjectId ? (
-        <TopicsTable subjectId={subjectId} />
+        <TopicsTable
+          subjectId={subjectId}
+          onRowClick={setSelectedTopic}
+        />
       ) : (
         <div className="rounded-md border p-8 text-center">
           <h3 className="text-lg font-semibold">Select a subject</h3>
@@ -154,6 +188,16 @@ function Topics() {
           </p>
         </div>
       )}
+
+      <TopicDetails
+        topic={selectedTopic}
+        open={selectedTopic !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedTopic(null);
+          }
+        }}
+      />
     </div>
   );
 }

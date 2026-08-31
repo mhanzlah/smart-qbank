@@ -27,7 +27,7 @@ router = APIRouter(
 )
 def read_questions(
     session: SessionDep,
-    current_user: CurrentUser,
+    _: CurrentUser,
     topic_ids: list[uuid.UUID] | None = None,
 ) -> list[QuestionPublic]:
     return question_crud.get_questions(
@@ -42,7 +42,7 @@ def read_questions(
 )
 def read_questions_for_review(
     session: SessionDep,
-    current_user: CurrentEditor,
+    _: CurrentEditor,
 ) -> list[QuestionPublic]:
     return question_crud.get_questions_for_review(
         session=session,
@@ -56,7 +56,7 @@ def read_questions_for_review(
 def read_question(
     question_id: uuid.UUID,
     session: SessionDep,
-    current_user: CurrentUser,
+    _: CurrentUser,
 ) -> Question:
     question = question_crud.get_question(
         session=session,
@@ -72,11 +72,6 @@ def read_question(
     return question
 
 
-# --------------------------------------------------------------------------
-# Create single question
-# --------------------------------------------------------------------------
-
-
 @router.post(
     "/",
     response_model=QuestionPublic,
@@ -85,17 +80,12 @@ def read_question(
 def create_question(
     question_in: QuestionCreate,
     session: SessionDep,
-    current_user: CurrentEditor,
+    _: CurrentEditor,
 ) -> Question:
     return question_crud.create_question(
         session=session,
         question_in=question_in,
     )
-
-
-# --------------------------------------------------------------------------
-# Generate questions
-# --------------------------------------------------------------------------
 
 
 @router.post(
@@ -106,49 +96,48 @@ def create_question(
 async def generate_questions(
     request: QuestionGenerationRequest,
     session: SessionDep,
-    current_user: CurrentEditor,
+    _: CurrentEditor,
 ) -> QuestionGenerationResponse:
-
     service = QuestionGenerationService()
+    all_questions: list[Question] = []
 
-    result = await service.generate(
-        session=session,
-        topic_id=request.topic_id,
-        difficulty_distribution=request.difficulty_distribution,
-    )
-
-    # ----------------------------------------------------------------------
-    # Save only after ALL questions have been generated and validated
-    # ----------------------------------------------------------------------
-
-    questions: list[Question] = []
-
-    for generated in result.questions:
-        question = Question(
-            question=generated.question,
-            options=generated.options,
-            correct_option=generated.correct_option,
-            difficulty=generated.difficulty,
-            cognitive_level=generated.cognitive_level,
-            explanation=generated.explanation,
-            topic_id=request.topic_id,
-            is_validated=True,
+    for topic_id in request.topic_ids:
+        generated_questions = await service.generate(
+            session=session,
+            topic_id=topic_id,
+            difficulty_distribution=request.difficulty_distribution,
         )
 
-        questions.append(question)
+        for generated in generated_questions:
+            question = Question(
+                question=generated.question,
+                options=[
+                    generated.options["A"],
+                    generated.options["B"],
+                    generated.options["C"],
+                    generated.options["D"],
+                    generated.options["E"],
+                ],
+                correct_option=generated.correct_option,
+                difficulty=generated.difficulty,
+                cognitive_level=generated.cognitive_level,
+                explanation=generated.explanation,
+                topic_id=topic_id,
+                is_validated=True,
+            )
 
-    session.add_all(questions)
+            all_questions.append(question)
+
+    session.add_all(all_questions)
     session.commit()
 
-    for question in questions:
+    for question in all_questions:
         session.refresh(question)
 
-    return result
-
-
-# --------------------------------------------------------------------------
-# Update question
-# --------------------------------------------------------------------------
+    return QuestionGenerationResponse(
+        questions=all_questions,
+        total_generated=len(all_questions),
+    )
 
 
 @router.patch(
@@ -159,7 +148,7 @@ def update_question(
     question_id: uuid.UUID,
     question_in: QuestionUpdate,
     session: SessionDep,
-    current_user: CurrentEditor,
+    _: CurrentEditor,
 ) -> Question:
     question = question_crud.get_question(
         session=session,
@@ -179,11 +168,6 @@ def update_question(
     )
 
 
-# --------------------------------------------------------------------------
-# Review question
-# --------------------------------------------------------------------------
-
-
 @router.patch(
     "/{question_id}/review",
     response_model=QuestionPublic,
@@ -192,7 +176,7 @@ def review_question(
     question_id: uuid.UUID,
     review_in: QuestionReview,
     session: SessionDep,
-    current_user: CurrentEditor,
+    _: CurrentEditor,
 ) -> Question:
     question = question_crud.get_question(
         session=session,
@@ -212,11 +196,6 @@ def review_question(
     )
 
 
-# --------------------------------------------------------------------------
-# Delete question
-# --------------------------------------------------------------------------
-
-
 @router.delete(
     "/{question_id}",
     status_code=status.HTTP_204_NO_CONTENT,
@@ -224,7 +203,7 @@ def review_question(
 def delete_question(
     question_id: uuid.UUID,
     session: SessionDep,
-    current_user: CurrentEditor,
+    _: CurrentEditor,
 ) -> None:
     question = question_crud.get_question(
         session=session,
