@@ -21,8 +21,11 @@ reusable_oauth2 = OAuth2PasswordBearer(
 
 
 def get_db() -> Generator[Session]:
-    with Session(engine) as session:
-        yield session
+    db = Session(engine)
+    try:
+        yield db
+    finally:
+        db.close()
 
 
 SessionDep = Annotated[Session, Depends(get_db)]

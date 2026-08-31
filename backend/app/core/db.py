@@ -5,7 +5,7 @@ from app.core.config import settings
 from app.models.user import User
 from app.schemas.user import UserCreate
 
-engine = create_engine(str(settings.DATABASE_URL), pool_pre_ping=True)
+engine = create_engine(str(settings.DATABASE_URL), pool_pre_ping=True, pool_size=5)
 
 
 # make sure all SQLModel models are imported (app.models) before initializing DB
