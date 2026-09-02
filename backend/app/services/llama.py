@@ -12,7 +12,7 @@ class LlamaService:
         prompt: str,
         system_prompt: str | None = None,
         temperature: float = 0.2,
-        max_tokens: int = 2048,
+        max_tokens: int = 8192,
     ) -> str:
         messages = []
 
@@ -46,6 +46,7 @@ class LlamaService:
         data = response.json()
 
         try:
+            print(data["choices"][0]["message"]["content"])
             return data["choices"][0]["message"]["content"]
         except (KeyError, IndexError, TypeError) as exc:
             raise ValueError("Invalid response received from Llama server.") from exc

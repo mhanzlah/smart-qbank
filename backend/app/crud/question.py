@@ -2,10 +2,11 @@ import uuid
 
 from sqlmodel import Session, select
 
-from app.models.question import Question
+from app.models import Question, Topic
 from app.schemas.question import (
     QuestionCreate,
     QuestionReview,
+    QuestionReviewStatus,
     QuestionUpdate,
 )
 
@@ -35,12 +36,20 @@ def get_questions(
 
 def get_questions_for_review(
     session: Session,
+    subject_id: uuid.UUID | None = None,
+    topic_id: uuid.UUID | None = None,
 ) -> list[Question]:
     statement = (
         select(Question)
-        .where(Question.review_status == "pending")
-        .order_by(Question.created_at.asc())
+        .join(Topic)
+        .where(Question.review_status == QuestionReviewStatus.pending)
     )
+
+    if subject_id:
+        statement = statement.where(Topic.subject_id == subject_id)
+
+    if topic_id:
+        statement = statement.where(Question.topic_id == topic_id)
 
     return list(session.exec(statement).all())
 

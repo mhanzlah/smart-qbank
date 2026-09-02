@@ -41,6 +41,8 @@ const GenerateQuestions = ({
     QuestionGenerationResponse["questions"]
   >([]);
 
+  const [generationTime, setGenerationTime] = useState<number | null>(null);
+
   const { showErrorToast } = useCustomToast();
 
   const questionsPerTopic = easyQuestions + mediumQuestions + hardQuestions;
@@ -64,6 +66,7 @@ const GenerateQuestions = ({
       const generatedQuestions = data.data.questions;
 
       setQuestions(generatedQuestions);
+      setGenerationTime(data.data.generation_time);
 
       if (generatedQuestions.length === 0) {
         showErrorToast("The model did not generate any questions.");
@@ -77,6 +80,7 @@ const GenerateQuestions = ({
 
   const handleGenerate = () => {
     setQuestions([]);
+    setGenerationTime(null);
     generateMutation.reset();
     generateMutation.mutate();
   };
@@ -301,7 +305,20 @@ const GenerateQuestions = ({
                 <p className="text-sm text-muted-foreground">
                   {questions.length} question
                   {questions.length === 1 ? "" : "s"} generated and saved
-                  successfully.
+                  successfully{" "}
+                  {generationTime !== null && (
+                    <div className="block">
+                      in{" "}
+                      <span className="font-medium text-foreground">
+                        {generationTime < 60
+                          ? `${generationTime.toFixed(1)}s`
+                          : `${Math.floor(generationTime / 60)}m ${(
+                              generationTime % 60
+                            ).toFixed(1)}s`}
+                      </span>
+                    </div>
+                  )}
+                  .
                 </p>
               </div>
 
@@ -316,7 +333,9 @@ const GenerateQuestions = ({
                       <div className="space-y-2">
                         {Object.entries(question.options).map(
                           ([optionLetter, option]) => {
-                            const letter = String.fromCharCode(65 + Number(optionLetter));
+                            const letter = String.fromCharCode(
+                              65 + Number(optionLetter),
+                            );
                             const isCorrect =
                               question.correct_option === letter;
 
@@ -327,9 +346,7 @@ const GenerateQuestions = ({
                                   isCorrect ? "border-primary/50 bg-muted" : ""
                                 }`}
                               >
-                                <span className="font-medium">
-                                  {letter}.
-                                </span>{" "}
+                                <span className="font-medium">{letter}.</span>{" "}
                                 {option}
                               </div>
                             );

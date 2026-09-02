@@ -60,7 +60,7 @@ export const Route = createFileRoute("/_layout/topics")({
   head: () => ({
     meta: [
       {
-        title: "Topics",
+        title: "Topics - Smart QBank",
       },
     ],
   }),

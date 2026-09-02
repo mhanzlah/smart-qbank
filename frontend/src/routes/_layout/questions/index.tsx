@@ -3,14 +3,12 @@ import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { Suspense, useState } from "react";
 
 import type { QuestionPublic } from "@/client";
-import { QuestionsService, SubjectsService, TopicsService, UsersService } from "@/client";
-import { DataTable } from "@/components/Common/DataTable";
-import PendingQuestions from "@/components/Pending/PendingQuestions";
-import AddQuestion from "@/components/Questions/AddQuestion";
-import GenerateQuestions from "@/components/Questions/GenerateQuestions";
-import QuestionDetails from "@/components/Questions/QuestionDetails";
-import { columns } from "@/components/Questions/columns";
-import useAuth from "@/hooks/useAuth";
+import {
+  QuestionsService,
+  SubjectsService,
+  TopicsService,
+  UsersService,
+} from "@/client";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -25,6 +23,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DataTable } from "@/components/Common/DataTable";
+import PendingQuestions from "@/components/Pending/PendingQuestions";
+import AddQuestion from "@/components/Questions/AddQuestion";
+import GenerateQuestions from "@/components/Questions/GenerateQuestions";
+import QuestionDetails from "@/components/Questions/QuestionDetails";
+import { columns } from "@/components/Questions/columns";
+import useAuth from "@/hooks/useAuth";
 
 function getSubjectsQueryOptions() {
   return {
@@ -48,17 +53,21 @@ function getTopicsQueryOptions(subjectId: string) {
 }
 
 function getQuestionsQueryOptions(topicIds: string[]) {
+  const normalizedTopicIds = [...topicIds].sort();
+
   return {
     queryFn: async () =>
       (
         await QuestionsService.readQuestions({
           query: {
-            topic_ids: topicIds,
+            topic_ids: normalizedTopicIds,
           },
         })
       ).data,
-    queryKey: ["questions", topicIds],
-    enabled: topicIds.length > 0,
+
+    queryKey: ["questions", normalizedTopicIds],
+
+    enabled: normalizedTopicIds.length > 0,
   };
 }
 
@@ -83,7 +92,7 @@ export const Route = createFileRoute("/_layout/questions/")({
   head: () => ({
     meta: [
       {
-        title: "Questions",
+        title: "Questions - Smart QBank",
       },
     ],
   }),
@@ -105,11 +114,7 @@ function QuestionsTableContent({
   }
 
   return (
-    <DataTable
-      columns={columns}
-      data={questions}
-      onRowClick={onRowClick}
-    />
+    <DataTable columns={columns} data={questions} onRowClick={onRowClick} />
   );
 }
 
@@ -122,25 +127,18 @@ function QuestionsTable({
 }) {
   return (
     <Suspense fallback={<PendingQuestions />}>
-      <QuestionsTableContent
-        topicIds={topicIds}
-        onRowClick={onRowClick}
-      />
+      <QuestionsTableContent topicIds={topicIds} onRowClick={onRowClick} />
     </Suspense>
   );
 }
 
 function Questions() {
   const { user: currentUser } = useAuth();
-
   const navigate = Route.useNavigate();
 
-  const { subject_id: subjectId, topic_ids: topicIdsParam } =
-    Route.useSearch();
+  const { subject_id: subjectId, topic_ids: topicIdsParam } = Route.useSearch();
 
-  const { data: subjects } = useSuspenseQuery(
-    getSubjectsQueryOptions(),
-  );
+  const { data: subjects } = useSuspenseQuery(getSubjectsQueryOptions());
 
   const { data: topics = [], isLoading: topicsLoading } = useQuery({
     ...getTopicsQueryOptions(subjectId),
@@ -169,6 +167,9 @@ function Questions() {
         topic_ids: "",
       },
     });
+
+    // Close any currently opened question
+    setSelectedQuestion(null);
   };
 
   const handleTopicChange = (topicId: string, checked: boolean) => {
@@ -182,6 +183,8 @@ function Questions() {
         topic_ids: newTopicIds.join(","),
       },
     });
+
+    setSelectedQuestion(null);
   };
 
   const handleSelectAllTopics = () => {
@@ -193,6 +196,8 @@ function Questions() {
         topic_ids: allTopicIds.join(","),
       },
     });
+
+    setSelectedQuestion(null);
   };
 
   const handleClearTopics = () => {
@@ -202,6 +207,8 @@ function Questions() {
         topic_ids: "",
       },
     });
+
+    setSelectedQuestion(null);
   };
 
   return (
@@ -321,6 +328,7 @@ function Questions() {
 
       {selectedTopicIds.length > 0 ? (
         <QuestionsTable
+          key={selectedTopicIds.join(",")}
           topicIds={selectedTopicIds}
           onRowClick={setSelectedQuestion}
         />

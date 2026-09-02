@@ -1,6 +1,7 @@
+import time
 import uuid
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Query, status
 
 from app.api.deps import CurrentEditor, CurrentUser, SessionDep
 from app.crud import question as question_crud
@@ -27,8 +28,8 @@ router = APIRouter(
 )
 def read_questions(
     session: SessionDep,
-    _: CurrentUser,
-    topic_ids: list[uuid.UUID] | None = None,
+    _: CurrentEditor,
+    topic_ids: list[uuid.UUID] | None = Query(default=None),
 ) -> list[QuestionPublic]:
     return question_crud.get_questions(
         session=session,
@@ -43,9 +44,13 @@ def read_questions(
 def read_questions_for_review(
     session: SessionDep,
     _: CurrentEditor,
+    subject_id: uuid.UUID | None = None,
+    topic_id: uuid.UUID | None = None,
 ) -> list[QuestionPublic]:
     return question_crud.get_questions_for_review(
         session=session,
+        subject_id=subject_id,
+        topic_id=topic_id,
     )
 
 
@@ -98,6 +103,8 @@ async def generate_questions(
     session: SessionDep,
     _: CurrentEditor,
 ) -> QuestionGenerationResponse:
+    start_time = time.perf_counter()
+
     service = QuestionGenerationService()
     all_questions: list[Question] = []
 
@@ -134,9 +141,12 @@ async def generate_questions(
     for question in all_questions:
         session.refresh(question)
 
+    generation_time = time.perf_counter() - start_time
+
     return QuestionGenerationResponse(
         questions=all_questions,
         total_generated=len(all_questions),
+        generation_time=round(generation_time, 2),
     )
 
 

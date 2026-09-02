@@ -20,9 +20,10 @@ import { handleError } from "@/utils";
 
 interface ReviewQuestionProps {
   question: QuestionPublic;
+  topicName: string;
 }
 
-const ReviewQuestion = ({ question }: ReviewQuestionProps) => {
+const ReviewQuestion = ({ question, topicName }: ReviewQuestionProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const queryClient = useQueryClient();
@@ -102,7 +103,6 @@ const ReviewQuestion = ({ question }: ReviewQuestionProps) => {
             <div className="space-y-2">
               {question.options.map((option, index) => {
                 const optionLetter = String.fromCharCode(65 + index);
-
                 const isCorrect = optionLetter === question.correct_option;
 
                 return (
@@ -128,7 +128,13 @@ const ReviewQuestion = ({ question }: ReviewQuestionProps) => {
           </div>
 
           {/* Metadata */}
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium">Topic</h3>
+
+              <p className="text-sm text-muted-foreground">{topicName}</p>
+            </div>
+
             <div className="space-y-2">
               <h3 className="text-sm font-medium">Difficulty</h3>
 

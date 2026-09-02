@@ -1,13 +1,24 @@
-
 import type { ColumnDef } from "@tanstack/react-table";
 import type { QuestionPublic } from "@/client";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import { QuestionActionsMenu } from "./QuestionActionsMenu";
 
 export type QuestionTableData = QuestionPublic;
 
 export const columns: ColumnDef<QuestionTableData>[] = [
+  {
+    accessorKey: "id",
+    header: "ID",
+    cell: ({ row }) => (
+      <span
+        className="font-mono text-xs text-muted-foreground"
+        title={row.original.id}
+      >
+        {row.original.id.slice(0, 8)}
+      </span>
+    ),
+  },
+
   {
     accessorKey: "question",
     header: "Question",
@@ -41,8 +52,7 @@ export const columns: ColumnDef<QuestionTableData>[] = [
                 : "destructive"
           }
         >
-          {difficulty.charAt(0).toUpperCase() +
-            difficulty.slice(1)}
+          {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
         </Badge>
       );
     },
@@ -60,14 +70,13 @@ export const columns: ColumnDef<QuestionTableData>[] = [
 
   {
     id: "actions",
-    header: () => (
-      <span className="sr-only">Actions</span>
-    ),
+    header: () => <span className="sr-only">Actions</span>,
     cell: ({ row }) => (
-      <div className="flex justify-end">
-        <QuestionActionsMenu
-          question={row.original}
-        />
+      <div
+        className="flex justify-end"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <QuestionActionsMenu question={row.original} />
       </div>
     ),
   },

@@ -34,7 +34,7 @@ export const Route = createFileRoute("/_layout/subjects")({
   head: () => ({
     meta: [
       {
-        title: "Subjects",
+        title: "Subjects - Smart QBank",
       },
     ],
   }),

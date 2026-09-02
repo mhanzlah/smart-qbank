@@ -145,7 +145,13 @@ export type QuestionCreate = {
     /**
      * Options
      */
-    options: Array<string>;
+    options: [
+        string,
+        string,
+        string,
+        string,
+        string
+    ];
     /**
      * Correct Option
      */
@@ -193,7 +199,10 @@ export type QuestionGenerationResponse = {
      * Total Generated
      */
     total_generated: number;
-    difficulty_distribution: DifficultyDistribution;
+    /**
+     * Generation Time
+     */
+    generation_time: number;
 };
 
 /**
@@ -207,7 +216,13 @@ export type QuestionPublic = {
     /**
      * Options
      */
-    options: Array<string>;
+    options: [
+        string,
+        string,
+        string,
+        string,
+        string
+    ];
     /**
      * Correct Option
      */
@@ -263,7 +278,13 @@ export type QuestionUpdate = {
     /**
      * Options
      */
-    options?: Array<string> | null;
+    options?: [
+        string,
+        string,
+        string,
+        string,
+        string
+    ] | null;
     /**
      * Correct Option
      */
@@ -810,12 +831,14 @@ export type loginRecoverPasswordHtmlContentResponses = {
 export type loginRecoverPasswordHtmlContentResponse = loginRecoverPasswordHtmlContentResponses[keyof loginRecoverPasswordHtmlContentResponses];
 
 export type questionsReadQuestionsData = {
-    /**
-     * Topic Ids
-     */
-    body?: Array<string> | null;
+    body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        /**
+         * Topic Ids
+         */
+        topic_ids?: Array<string> | null;
+    };
     url: '/api/v1/questions/';
 };
 

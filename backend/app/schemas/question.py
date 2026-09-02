@@ -132,3 +132,4 @@ class GeneratedQuestion(BaseModel):
 class QuestionGenerationResponse(BaseModel):
     questions: list[QuestionPublic]
     total_generated: int
+    generation_time: float

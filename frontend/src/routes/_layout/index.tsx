@@ -1,20 +1,20 @@
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute } from "@tanstack/react-router";
 
-import useAuth from "@/hooks/useAuth"
+import useAuth from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/_layout/")({
   component: Dashboard,
   head: () => ({
     meta: [
       {
-        title: "Dashboard - FastAPI Template",
+        title: "Smart QBank",
       },
     ],
   }),
-})
+});
 
 function Dashboard() {
-  const { user: currentUser } = useAuth()
+  const { user: currentUser } = useAuth();
 
   return (
     <div>
@@ -27,5 +27,5 @@ function Dashboard() {
         </p>
       </div>
     </div>
-  )
+  );
 }

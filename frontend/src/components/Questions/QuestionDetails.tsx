@@ -1,4 +1,3 @@
-
 import type { QuestionPublic } from "@/client";
 
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { LatexText } from "../Common/LatexText";
 
 interface QuestionDetailsProps {
   question: QuestionPublic | null;
@@ -34,15 +34,13 @@ export default function QuestionDetails({
         <div className="space-y-5">
           <div className="space-y-1">
             <p className="text-sm text-muted-foreground">ID</p>
-            <p className="break-all font-mono text-xs">
-              {question.id}
-            </p>
+            <p className="break-all font-mono text-xs">{question.id}</p>
           </div>
 
           <div className="space-y-1">
             <p className="text-sm text-muted-foreground">Question</p>
             <p className="whitespace-pre-wrap text-sm font-medium">
-              {question.question}
+              <LatexText>{question.question}</LatexText>
             </p>
           </div>
 
@@ -55,20 +53,15 @@ export default function QuestionDetails({
                 const isCorrect = optionLetter === question.correct_option;
 
                 return (
-                  <div
-                    key={optionLetter}
-                    className="rounded-md border p-3"
-                  >
+                  <div key={optionLetter} className="rounded-md border p-3">
                     <div className="flex items-start gap-3">
-                      <span className="font-semibold">
-                        {optionLetter}.
+                      <span className="font-semibold">{optionLetter}.</span>
+
+                      <span className="flex-1">
+                        <LatexText>{option}</LatexText>
                       </span>
 
-                      <span className="flex-1">{option}</span>
-
-                      {isCorrect && (
-                        <Badge variant="default">Correct</Badge>
-                      )}
+                      {isCorrect && <Badge variant="default">Correct</Badge>}
                     </div>
                   </div>
                 );
@@ -78,48 +71,38 @@ export default function QuestionDetails({
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">
-                Difficulty
-              </p>
+              <p className="text-sm text-muted-foreground">Difficulty</p>
 
-              <Badge variant="outline">
-                {question.difficulty}
-              </Badge>
+              <Badge variant="outline">{question.difficulty}</Badge>
             </div>
 
             <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">
-                Cognitive Level
-              </p>
+              <p className="text-sm text-muted-foreground">Cognitive Level</p>
 
-              <Badge variant="outline">
-                {question.cognitive_level}
-              </Badge>
+              <Badge variant="outline">{question.cognitive_level}</Badge>
             </div>
           </div>
 
           <div className="space-y-1">
-            <p className="text-sm text-muted-foreground">
-              Explanation
-            </p>
+            <p className="text-sm text-muted-foreground">Explanation</p>
 
-            <p className="whitespace-pre-wrap text-sm">
-              {question.explanation || "No explanation provided"}
-            </p>
+            <div className="whitespace-pre-wrap text-sm">
+              {question.explanation ? (
+                <LatexText>{question.explanation}</LatexText>
+              ) : (
+                "No explanation provided"
+              )}
+            </div>
           </div>
 
           <div className="space-y-1">
             <p className="text-sm text-muted-foreground">Topic ID</p>
 
-            <p className="break-all font-mono text-xs">
-              {question.topic_id}
-            </p>
+            <p className="break-all font-mono text-xs">{question.topic_id}</p>
           </div>
 
           <div className="space-y-1">
-            <p className="text-sm text-muted-foreground">
-              Validated
-            </p>
+            <p className="text-sm text-muted-foreground">Validated</p>
 
             <Badge variant="outline">
               {question.is_validated ? "Yes" : "No"}
@@ -127,13 +110,9 @@ export default function QuestionDetails({
           </div>
 
           <div className="space-y-1">
-            <p className="text-sm text-muted-foreground">
-              Review Status
-            </p>
+            <p className="text-sm text-muted-foreground">Review Status</p>
 
-            <Badge variant="outline">
-              {question.review_status}
-            </Badge>
+            <Badge variant="outline">{question.review_status}</Badge>
           </div>
         </div>
       </DialogContent>

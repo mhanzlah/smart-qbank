@@ -7,6 +7,8 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import useAuth from "@/hooks/useAuth";
 import { type Item, Main } from "./Main";
@@ -16,6 +18,9 @@ const baseItems: Item[] = [{ icon: Home, title: "Dashboard", path: "/" }];
 
 export function AppSidebar() {
   const { user: currentUser } = useAuth();
+  const { state } = useSidebar();
+
+  const collapsed = state === "collapsed";
 
   let items: Item[] = baseItems;
 
@@ -34,12 +39,16 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="px-4 py-6 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:items-center">
-        <Logo />
+      <SidebarHeader className="flex-row items-center justify-between px-4 py-6 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2">
+        <Logo collapsed={collapsed} />
+
+        {!collapsed && <SidebarTrigger className="text-muted-foreground" />}
       </SidebarHeader>
+
       <SidebarContent>
         <Main items={items} />
       </SidebarContent>
+
       <SidebarFooter>
         <SidebarAppearance />
         <User user={currentUser} />
