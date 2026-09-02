@@ -1,41 +1,32 @@
-# Full Stack FastAPI Template
+# Smart QBank
 
-[![Test Docker Compose](../../actions/workflows/test-docker-compose.yml/badge.svg)](../../actions/workflows/test-docker-compose.yml)
-[![Test Backend](../../actions/workflows/test-backend.yml/badge.svg)](../../actions/workflows/test-backend.yml)
+Smart QBank is a question bank management system for creating, managing, reviewing, and organizing MCQs by subject and topic.
 
-## Technology Stack and Features
+It is built with FastAPI, React, PostgreSQL, and uses a local LLM for AI-assisted question generation.
 
-- ⚡ [**FastAPI**](https://fastapi.tiangolo.com) for the Python backend API.
-  - 🧰 [SQLModel](https://sqlmodel.tiangolo.com) for the Python SQL database interactions (ORM).
-  - 🔍 [Pydantic](https://docs.pydantic.dev), used by FastAPI, for the data validation and settings management.
-  - 💾 [PostgreSQL](https://www.postgresql.org) as the SQL database.
-- 🚀 [React](https://react.dev) for the frontend.
-  - 🧩 Built into the backend application and served by FastAPI on the same domain as the API.
-  - 💃 Using TypeScript, hooks, [Vite](https://vitejs.dev), and other parts of a modern frontend stack.
-  - 🎨 [Tailwind CSS](https://tailwindcss.com) and [shadcn/ui](https://ui.shadcn.com) for the frontend components.
-  - 🤖 An automatically generated frontend client.
-  - 🧪 [Playwright](https://playwright.dev) for end-to-end testing.
-  - 🦇 Dark mode support.
-- ☁️ [FastAPI Cloud](https://fastapicloud.com) for deployment.
-- 🐋 [Docker Compose](https://www.docker.com) for local services and self-hosted deployment.
-  - 📞 [Traefik](https://traefik.io) as a reverse proxy with automatic HTTPS.
-- 🔒 Secure password hashing by default.
-- 🔑 JWT (JSON Web Token) authentication.
-- 📫 Email-based password recovery.
-- ✉️ [React Email](https://react.email) for email templates.
-- 📬 [Mailpit](https://mailpit.axllent.org) for local email testing during development.
-- ✅ Tests with [Pytest](https://pytest.org).
-- 🏭 CI (continuous integration) and CD (continuous deployment) based on GitHub Actions.
+## Technology Stack
 
-## Backend Development
+* **Backend:** FastAPI, SQLModel, Pydantic
+* **Frontend:** React, TypeScript, Vite, Tailwind CSS, shadcn/ui
+* **Database:** PostgreSQL
+* **Authentication:** JWT
+* **AI:** llama.cpp with Gemma 4
+* **Testing:** Pytest, Playwright
+* **Deployment:** Docker Compose
 
-Backend docs: [backend/README.md](./backend/README.md).
+## Features
 
-## Frontend Development
-
-Frontend docs: [frontend/README.md](./frontend/README.md).
+* Subject, topic, and question management
+* AI-assisted topic generation
+* AI-assisted MCQ generation
+* Difficulty and cognitive-level based question generation
+* Question review and validation
+* Role-based access with Superuser, Editor, and User roles
+* Search and management of questions
 
 ## Llama
+
+Smart QBank uses `llama-server` for local LLM inference.
 
 ```bash
 llama-server \
@@ -45,22 +36,11 @@ llama-server \
   -t 8
 ```
 
-## Deployment
+## Documentation
 
-FastAPI Cloud deployment: [deployment.md](./deployment.md).
-
-Self-hosted deployment with Docker Compose: [deployment-docker-compose.md](./deployment-docker-compose.md).
-
-## Development
-
-General development docs: [development.md](./development.md).
-
-This includes the local FastAPI and Vite workflow, Docker Compose services, `.env` configuration, and more.
-
-## Release Notes
-
-Check the file [release-notes.md](./release-notes.md).
+* [Development Guide](./docs/development.md) — setup, environment, database, running the application, and development workflow.
+* [User Guide](./docs/user-guide.md) — how to use Smart QBank and manage subjects, topics, and questions.
 
 ## License
 
-The Full Stack FastAPI Template is licensed under the terms of the MIT license.
+This project is licensed under the MIT License.
