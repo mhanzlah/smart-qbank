@@ -1,123 +1,103 @@
-# FastAPI Project - Frontend
+# Smart QBank — Frontend
 
-The frontend is built with [Vite](https://vitejs.dev/), [React](https://react.dev/), [TypeScript](https://www.typescriptlang.org/), [TanStack Query](https://tanstack.com/query), [TanStack Router](https://tanstack.com/router), [Tailwind CSS](https://tailwindcss.com/), and [shadcn/ui](https://ui.shadcn.com/).
+The Smart QBank frontend is built with React, TypeScript, Vite, Tailwind CSS, and shadcn/ui. It provides the interface for managing subjects, topics, questions, users, and AI-assisted generation.
+
+## Technology Stack
+
+* **React** — UI
+* **TypeScript** — Type safety
+* **Vite** — Development and build tooling
+* **TanStack Query** — Server state management
+* **TanStack Router** — Routing
+* **Tailwind CSS** — Styling
+* **shadcn/ui** — UI components
+* **Playwright** — End-to-end testing
 
 ## Requirements
 
-- [Bun](https://bun.sh/)
+* [Bun](https://bun.sh/)
 
 ## Quick Start
 
-From the project root, install the dependencies and start the frontend development server:
+From the project root, install dependencies and start the frontend:
 
 ```bash
 bun install
 bun run dev
 ```
 
-Then open <http://localhost:5173/> in your browser.
+The development server runs at:
 
-Run `uv run bash scripts/prestart.sh` and `uv run fastapi dev` from the `backend` directory, with PostgreSQL running in Docker Compose. See [../development.md](../development.md) for the complete setup.
+```text
+http://localhost:5173
+```
 
-To serve the frontend with FastAPI, run `bun run build` from the `frontend` directory and open `http://localhost:8000`.
+The backend and PostgreSQL database must also be running for the application to work correctly. See the [Development Guide](../docs/development.md) for the complete setup.
 
-Check `frontend/package.json` to see the other available commands.
+## Production Build
 
-## Removing the Frontend
+Build the frontend with:
 
-If you are developing an API-only app and want to remove the frontend, you can do it easily:
+```bash
+bun run build
+```
 
-* Remove the `./frontend` directory.
+The built frontend is served by FastAPI when running the application in production mode.
 
-* In the `backend/app/main.py` file, remove the `app.frontend()` call.
+## API Client
 
-* In the `backend/Dockerfile` file, remove the frontend build stage and the `COPY --from=frontend-build` instruction.
+The frontend uses an automatically generated OpenAPI client for communication with the FastAPI backend.
 
-* In the `compose.override.yml` file, remove the `playwright` service.
-
-* In the `.github/workflows/deploy.yml` file, remove the **Set up Bun**, **Install frontend dependencies**, and **Build frontend** steps.
-
-* In the `.fastapicloudignore` file, remove the `!backend/app/frontend/` entry.
-
-Done, you now have an API-only app. 🤓
-
-## Generate Client
-
-### Automatically
-
-* From the project root, run the script:
+To regenerate the client after backend API changes:
 
 ```bash
 bash ./scripts/generate-client.sh
 ```
 
-* Commit the changes.
-
-### Manually
-
-* Make sure the backend is running.
-
-* Download the OpenAPI JSON file from `http://localhost:8000/api/v1/openapi.json` and copy it to a new file `openapi.json` at the root of the `frontend` directory.
-
-* To generate the frontend client, run:
+or
 
 ```bash
 bun run generate-client
 ```
 
-* Commit the changes.
+The generated client is located in:
 
-Regenerate the client whenever backend changes affect the OpenAPI schema.
-
-## Using a Remote API
-
-By default, the built frontend uses the same origin as the FastAPI app. If you want to use a remote API while running the Vite development server, you can set the environment variable `VITE_API_URL` to the URL of the remote API. For example, you can set it in the `frontend/.env` file:
-
-```env
-VITE_API_URL=https://my-domain.example.com
+```text
+frontend/src/client/
 ```
 
-Then, when you run the frontend, it will use that URL as the base URL for the API.
+Regenerate and commit the client whenever backend changes affect the OpenAPI schema.
 
 ## Code Structure
 
-The frontend code is structured as follows:
-
-* `frontend/src` - The main frontend code.
-* `frontend/public` - Static assets.
-* `frontend/src/client` - The generated OpenAPI client.
-* `frontend/src/components` - The components of the frontend, including the shadcn/ui components in `frontend/src/components/ui`.
-* `frontend/src/hooks` - Custom hooks.
-* `frontend/src/lib` - Shared frontend utilities.
-* `frontend/src/routes` - The frontend routes and pages.
-
-## End-to-End Testing with Playwright
-
-The frontend includes initial end-to-end tests using Playwright. To run the tests, you need to have the Docker Compose stack running. Start the stack with the following command:
-
-```bash
-docker compose run --rm backend bash scripts/prestart.sh
-docker compose up -d --wait backend
+```text
+frontend/
+├── src/
+│   ├── client/       # Generated OpenAPI client
+│   ├── components/   # Reusable UI components
+│   ├── hooks/        # Custom React hooks
+│   ├── lib/          # Shared utilities
+│   └── routes/       # Application routes and pages
+├── public/           # Static assets
+└── package.json
 ```
 
-Then, you can run the tests with the following command:
+## End-to-End Testing
+
+Smart QBank uses Playwright for end-to-end testing.
+
+Make sure the application stack is running, then run:
 
 ```bash
 bunx playwright test
 ```
 
-You can also run your tests in UI mode to see the browser and interact with it running:
+To run tests in UI mode:
 
 ```bash
 bunx playwright test --ui
 ```
 
-To stop and remove the Docker Compose stack and clean the data created in tests, use the following command:
+Tests are located in the frontend test directory.
 
-```bash
-docker compose down -v
-```
-
-To update the tests, navigate to the tests directory and modify the existing test files or add new ones as needed.
-
-For more information on writing and running Playwright tests, refer to the official [Playwright documentation](https://playwright.dev/docs/intro).
+For more information, see the [Playwright documentation](https://playwright.dev/docs/intro).
