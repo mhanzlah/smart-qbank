@@ -108,38 +108,53 @@ async def generate_questions(
     service = QuestionGenerationService()
     all_questions: list[Question] = []
 
+    distribution = {
+        "easy": request.difficulty_distribution.easy,
+        "medium": request.difficulty_distribution.medium,
+        "hard": request.difficulty_distribution.hard,
+    }
+
     for topic_id in request.topic_ids:
-        generated_questions = await service.generate(
-            session=session,
-            topic_id=topic_id,
-            difficulty_distribution=request.difficulty_distribution,
-        )
+        for difficulty, count in distribution.items():
+            for _ in range(count):
+                try:
+                    generated = await service.generate(
+                        session=session,
+                        topic_id=topic_id,
+                        difficulty=difficulty,
+                    )
 
-        for generated in generated_questions:
-            question = Question(
-                question=generated.question,
-                options=[
-                    generated.options["A"],
-                    generated.options["B"],
-                    generated.options["C"],
-                    generated.options["D"],
-                    generated.options["E"],
-                ],
-                correct_option=generated.correct_option,
-                difficulty=generated.difficulty,
-                cognitive_level=generated.cognitive_level,
-                explanation=generated.explanation,
-                topic_id=topic_id,
-                is_validated=True,
-            )
+                    question = Question(
+                        question=generated.question,
+                        options=[
+                            generated.options["A"],
+                            generated.options["B"],
+                            generated.options["C"],
+                            generated.options["D"],
+                            generated.options["E"],
+                        ],
+                        correct_option=generated.correct_option,
+                        difficulty=generated.difficulty,
+                        cognitive_level=generated.cognitive_level,
+                        explanation=generated.explanation,
+                        topic_id=topic_id,
+                        is_validated=True,
+                    )
 
-            all_questions.append(question)
+                    all_questions.append(question)
 
-    session.add_all(all_questions)
-    session.commit()
+                except Exception as exc:
+                    print(
+                        f"Skipping {difficulty} question "
+                        f"for topic {topic_id}: {exc}"
+                    )
 
-    for question in all_questions:
-        session.refresh(question)
+    if all_questions:
+        session.add_all(all_questions)
+        session.commit()
+
+        for question in all_questions:
+            session.refresh(question)
 
     generation_time = time.perf_counter() - start_time
 

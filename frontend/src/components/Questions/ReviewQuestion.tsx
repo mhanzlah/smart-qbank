@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import useCustomToast from "@/hooks/useCustomToast";
 import { handleError } from "@/utils";
+import { LatexText } from "../Common/LatexText";
 
 interface ReviewQuestionProps {
   question: QuestionPublic;
@@ -92,7 +93,7 @@ const ReviewQuestion = ({ question, topicName }: ReviewQuestionProps) => {
             <h3 className="text-sm font-medium">Question</h3>
 
             <div className="rounded-md border bg-muted/30 p-4 text-sm leading-6">
-              {question.question}
+              <LatexText>{question.question}</LatexText>
             </div>
           </div>
 
@@ -118,7 +119,9 @@ const ReviewQuestion = ({ question, topicName }: ReviewQuestionProps) => {
                       {optionLetter}
                     </span>
 
-                    <span className="flex-1 pt-1">{option}</span>
+                    <span className="flex-1 pt-1">
+                      <LatexText>{option}</LatexText>
+                    </span>
 
                     {isCorrect && <Badge variant="default">Correct</Badge>}
                   </div>
@@ -155,7 +158,7 @@ const ReviewQuestion = ({ question, topicName }: ReviewQuestionProps) => {
             <h3 className="text-sm font-medium">Explanation</h3>
 
             <div className="rounded-md border bg-muted/30 p-4 text-sm leading-6">
-              {question.explanation}
+              <LatexText>{question.explanation}</LatexText>
             </div>
           </div>
 

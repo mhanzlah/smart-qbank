@@ -2,6 +2,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import type { QuestionPublic } from "@/client";
 import { Badge } from "@/components/ui/badge";
 import { QuestionActionsMenu } from "./QuestionActionsMenu";
+import { LatexText } from "../Common/LatexText";
 
 export type QuestionTableData = QuestionPublic;
 
@@ -26,11 +27,8 @@ export const columns: ColumnDef<QuestionTableData>[] = [
       const question = row.original.question;
 
       return (
-        <span
-          className="block max-w-xl truncate font-medium"
-          title={question}
-        >
-          {question}
+        <span className="block max-w-xl truncate font-medium" title={question}>
+          <LatexText>{question}</LatexText>
         </span>
       );
     },
@@ -62,9 +60,7 @@ export const columns: ColumnDef<QuestionTableData>[] = [
     accessorKey: "correct_option",
     header: "Correct Answer",
     cell: ({ row }) => (
-      <Badge variant="outline">
-        {row.original.correct_option}
-      </Badge>
+      <Badge variant="outline">{row.original.correct_option}</Badge>
     ),
   },
 

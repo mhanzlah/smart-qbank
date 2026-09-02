@@ -19,6 +19,7 @@ import { LoadingButton } from "@/components/ui/loading-button";
 import { Separator } from "@/components/ui/separator";
 import useCustomToast from "@/hooks/useCustomToast";
 import { handleError } from "@/utils";
+import { LatexText } from "../Common/LatexText";
 
 interface GenerateQuestionsProps {
   topicIds: string[];
@@ -327,7 +328,7 @@ const GenerateQuestions = ({
                   <div key={question.id} className="rounded-lg border p-4">
                     <div className="space-y-4">
                       <p className="font-medium">
-                        {index + 1}. {question.question}
+                        {index + 1}. <LatexText>{question.question}</LatexText>
                       </p>
 
                       <div className="space-y-2">
@@ -370,7 +371,9 @@ const GenerateQuestions = ({
                             Explanation
                           </p>
 
-                          <p className="mt-1 text-sm">{question.explanation}</p>
+                          <p className="mt-1 text-sm">
+                            <LatexText>{question.explanation}</LatexText>
+                          </p>
                         </div>
                       )}
                     </div>

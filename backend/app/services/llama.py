@@ -3,7 +3,13 @@ import httpx
 from app.core.config import settings
 
 LLAMA_SERVER_URL = settings.LLAMA_SERVER_URL
-LLAMA_TIMEOUT = 300.0
+
+timeout = httpx.Timeout(
+    connect=10.0,
+    read=6000.0,
+    write=30.0,
+    pool=30.0,
+)
 
 
 class LlamaService:
@@ -31,7 +37,7 @@ class LlamaService:
             }
         )
 
-        async with httpx.AsyncClient(timeout=LLAMA_TIMEOUT) as client:
+        async with httpx.AsyncClient(timeout=timeout) as client:
             response = await client.post(
                 f"{LLAMA_SERVER_URL}/v1/chat/completions",
                 json={

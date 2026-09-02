@@ -188,24 +188,6 @@ export type QuestionGenerationRequest = {
 };
 
 /**
- * QuestionGenerationResponse
- */
-export type QuestionGenerationResponse = {
-    /**
-     * Questions
-     */
-    questions: Array<QuestionPublic>;
-    /**
-     * Total Generated
-     */
-    total_generated: number;
-    /**
-     * Generation Time
-     */
-    generation_time: number;
-};
-
-/**
  * QuestionPublic
  */
 export type QuestionPublic = {
@@ -890,9 +872,27 @@ export type questionsCreateQuestionResponse = questionsCreateQuestionResponses[k
 export type questionsReadQuestionsForReviewData = {
     body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        /**
+         * Subject Id
+         */
+        subject_id?: string | null;
+        /**
+         * Topic Id
+         */
+        topic_id?: string | null;
+    };
     url: '/api/v1/questions/review';
 };
+
+export type questionsReadQuestionsForReviewErrors = {
+    /**
+     * Validation Error
+     */
+    422: HTTPValidationError;
+};
+
+export type questionsReadQuestionsForReviewError = questionsReadQuestionsForReviewErrors[keyof questionsReadQuestionsForReviewErrors];
 
 export type questionsReadQuestionsForReviewResponses = {
     /**
@@ -1013,9 +1013,13 @@ export type questionsGenerateQuestionsError = questionsGenerateQuestionsErrors[k
 
 export type questionsGenerateQuestionsResponses = {
     /**
+     * Response Questions-Generate Questions
+     *
      * Successful Response
      */
-    201: QuestionGenerationResponse;
+    200: {
+        [key: string]: unknown;
+    };
 };
 
 export type questionsGenerateQuestionsResponse = questionsGenerateQuestionsResponses[keyof questionsGenerateQuestionsResponses];
